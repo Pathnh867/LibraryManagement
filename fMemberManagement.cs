@@ -24,7 +24,7 @@ namespace LibraryManagement
             InitializeComponent();
             context = new LibraryDbContext();
             ApplyFormStyle();
-            LoadMembers();
+            LoadMemberData();
             SetControlState(false);
         }
         private void ApplyFormStyle()
@@ -141,7 +141,7 @@ namespace LibraryManagement
                         m.Status
                     }).ToList();
                 memberBindingSource.DataSource = members;
-                dvgMembers.DataSource = memberBindingSource;
+                dgvMembers.DataSource = memberBindingSource;
 
                 FormatDataGridView();
             }
@@ -316,7 +316,7 @@ namespace LibraryManagement
             dtpExpiryDate.Value = DateTime.Today.AddYears(1); // Mặc định 1 năm từ hôm nay
 
             txtSearch.KeyDown += txtSearch_KeyDown;
-            dvgMembers.CellDoubleClick += dvgMembers_CellDoubleClick;
+            dgvMembers.DoubleClick += dgvMembers_DoubleClick;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -542,11 +542,11 @@ namespace LibraryManagement
             }
         }
 
-        private void dgvMembers_DoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvMembers_DoubleClick(object sender, EventArgs e)
         {
-            if (e.RowIndex >= 0 && dgvMembers.Rows[e.RowIndex].Cells["MemberId"].Value != null)
+            if (dgvMembers.SelectedRows.Count > 0 && dgvMembers.SelectedRows[0].Cells["MemberId"].Value != null)
             {
-                int memberId = (int)dgvMembers.Rows[e.RowIndex].Cells["MemberId"].Value;
+                int memberId = (int)dgvMembers.SelectedRows[0].Cells["MemberId"].Value;
                 ShowMemberDetail(memberId);
             }
         }

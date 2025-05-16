@@ -123,3 +123,4 @@ C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.fMainForm.resources
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.fBookManagement.resources
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.sourcelink.json
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.fMemberManagement.resources

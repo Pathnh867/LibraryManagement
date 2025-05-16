@@ -151,9 +151,20 @@ namespace LibraryManagement
         // Phương thức mở form quản lý thành viên
         private void OpenMemberManagement()
         {
-            // Tạo một instance của form quản lý thành viên
-            //Form memberForm = new fMemberManagement();
-            //OpenChildForm(memberForm);
+            // Xóa nội dung hiện tại
+            pnlContent.Controls.Clear();
+
+            // Tạo instance của form quản lý thành viên
+            fMemberManagement memberForm = new fMemberManagement();
+
+            // Cấu hình form con
+            memberForm.TopLevel = false;
+            memberForm.FormBorderStyle = FormBorderStyle.None;
+            memberForm.Dock = DockStyle.Fill;
+
+            // Thêm form con vào panel nội dung
+            pnlContent.Controls.Add(memberForm);
+            memberForm.Show();
         }
 
         // Phương thức mở form mượn/trả sách

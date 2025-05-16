@@ -34,11 +34,11 @@
             btnMinimize = new Button();
             btnClose = new Button();
             pnlSidebar = new Panel();
-            lblUserName = new Label();
             pnlUserInfo = new Panel();
+            lblUserRole = new Label();
+            lblUserName = new Label();
             picAvatar = new PictureBox();
             pnlContent = new Panel();
-            lblUserRole = new Label();
             pnlHeader.SuspendLayout();
             pnlSidebar.SuspendLayout();
             pnlUserInfo.SuspendLayout();
@@ -56,6 +56,7 @@
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1200, 50);
             pnlHeader.TabIndex = 0;
+            pnlHeader.Paint += pnlHeader_Paint;
             // 
             // lblTitle
             // 
@@ -104,16 +105,6 @@
             pnlSidebar.Size = new Size(230, 650);
             pnlSidebar.TabIndex = 1;
             // 
-            // lblUserName
-            // 
-            lblUserName.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUserName.Location = new Point(15, 105);
-            lblUserName.Name = "lblUserName";
-            lblUserName.Size = new Size(200, 25);
-            lblUserName.TabIndex = 1;
-            lblUserName.Text = "Admin";
-            lblUserName.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // pnlUserInfo
             // 
             pnlUserInfo.BackColor = Color.Transparent;
@@ -125,6 +116,26 @@
             pnlUserInfo.Name = "pnlUserInfo";
             pnlUserInfo.Size = new Size(230, 150);
             pnlUserInfo.TabIndex = 0;
+            // 
+            // lblUserRole
+            // 
+            lblUserRole.ForeColor = Color.WhiteSmoke;
+            lblUserRole.Location = new Point(15, 130);
+            lblUserRole.Name = "lblUserRole";
+            lblUserRole.Size = new Size(200, 20);
+            lblUserRole.TabIndex = 2;
+            lblUserRole.Text = "Quản trị viên";
+            lblUserRole.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblUserName
+            // 
+            lblUserName.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblUserName.Location = new Point(15, 105);
+            lblUserName.Name = "lblUserName";
+            lblUserName.Size = new Size(200, 25);
+            lblUserName.TabIndex = 1;
+            lblUserName.Text = "Admin";
+            lblUserName.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // picAvatar
             // 
@@ -143,16 +154,6 @@
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(970, 650);
             pnlContent.TabIndex = 2;
-            // 
-            // lblUserRole
-            // 
-            lblUserRole.ForeColor = Color.WhiteSmoke;
-            lblUserRole.Location = new Point(15, 130);
-            lblUserRole.Name = "lblUserRole";
-            lblUserRole.Size = new Size(200, 20);
-            lblUserRole.TabIndex = 2;
-            lblUserRole.Text = "Quản trị viên";
-            lblUserRole.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // fMainForm
             // 

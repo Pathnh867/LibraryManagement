@@ -125,16 +125,27 @@ namespace LibraryManagement
             button.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
 
             currentButton = button;
-            lblTitle.Text = button.Text.Trim().Substring(3).ToUpper(); 
+            lblTitle.Text = button.Text.Trim().Substring(3).ToUpper();
         }
-        
+
 
         // Phương thức mở form quản lý sách
         private void OpenBookManagement()
         {
-            // Tạo một instance của form quản lý sách
-            //Form bookForm = new fBookManagement();
-            //OpenChildForm(bookForm);
+            // Xóa nội dung hiện tại
+            pnlContent.Controls.Clear();
+
+            // Tạo instance của form quản lý sách
+            fBookManagement bookForm = new fBookManagement();
+
+            // Cấu hình form con
+            bookForm.TopLevel = false;
+            bookForm.FormBorderStyle = FormBorderStyle.None;
+            bookForm.Dock = DockStyle.Fill;
+
+            // Thêm form con vào panel nội dung
+            pnlContent.Controls.Add(bookForm);
+            bookForm.Show();
         }
 
         // Phương thức mở form quản lý thành viên
@@ -185,7 +196,7 @@ namespace LibraryManagement
             }
         }
 
-        // Phương thức mở form con trong panel nội dung
+        //Phương thức mở form con trong panel nội dung
         //private void OpenChildForm(Form childForm)
         //{
         //    pnlContent.Controls.Clear();
@@ -524,5 +535,9 @@ namespace LibraryManagement
                 button.Controls.Add(badge);
         }
 
+        private void pnlHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

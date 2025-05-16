@@ -7,6 +7,9 @@
     <Compile Update="fBorrowReturn.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="fDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="fLogin.cs">
       <SubType>Form</SubType>
     </Compile>

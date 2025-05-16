@@ -170,8 +170,20 @@ namespace LibraryManagement
         // Phương thức mở form mượn/trả sách
         private void OpenBorrowReturn()
         {
-            //Form borrowForm = new fBorrowReturn();
-            //OpenChildForm(borrowForm);
+            // Xóa nội dung hiện tại
+            pnlContent.Controls.Clear();
+
+            // Tạo instance của form mượn/trả sách
+            fBorrowReturn borrowForm = new fBorrowReturn();
+
+            // Cấu hình form con
+            borrowForm.TopLevel = false;
+            borrowForm.FormBorderStyle = FormBorderStyle.None;
+            borrowForm.Dock = DockStyle.Fill;
+
+            // Thêm form con vào panel nội dung
+            pnlContent.Controls.Add(borrowForm);
+            borrowForm.Show();
         }
 
         // Phương thức mở form thống kê báo cáo

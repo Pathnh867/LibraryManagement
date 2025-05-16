@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -344,87 +345,12 @@ namespace LibraryManagement
         private void OpenDashboard()
         {
             pnlContent.Controls.Clear();
-
-            // Panel chứa các thẻ thống kê
-            Panel pnlStats = new Panel();
-            pnlStats.Size = new Size(pnlContent.Width - 60, 120);
-            pnlStats.Location = new Point(30, 30);
-            pnlStats.BackColor = Color.White;
-            pnlStats.Paint += (s, e) => DrawPanelBorder(s, e, pnlStats);
-
-            // Tạo 4 thẻ thống kê nhanh
-            CreateStatCard(pnlStats, "TỔNG SỐ SÁCH", "1,245", "📚", 0);
-            CreateStatCard(pnlStats, "THÀNH VIÊN", "356", "👥", 1);
-            CreateStatCard(pnlStats, "ĐANG CHO MƯỢN", "127", "📝", 2);
-            CreateStatCard(pnlStats, "QUÁ HẠN", "18", "⏰", 3);
-
-            // Panel hoạt động gần đây
-            Panel pnlRecent = new Panel();
-            pnlRecent.Size = new Size((pnlContent.Width - 90) / 2, 300);
-            pnlRecent.Location = new Point(30, 170);
-            pnlRecent.BackColor = Color.White;
-            pnlRecent.Paint += (s, e) => DrawPanelBorder(s, e, pnlRecent);
-
-            // Tiêu đề
-            Label lblRecentTitle = new Label();
-            lblRecentTitle.Text = "Hoạt động gần đây";
-            lblRecentTitle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            lblRecentTitle.ForeColor = primaryDarkColor;
-            lblRecentTitle.Location = new Point(15, 15);
-            lblRecentTitle.AutoSize = true;
-            pnlRecent.Controls.Add(lblRecentTitle);
-
-            // Danh sách hoạt động
-            ListView lvRecent = new ListView();
-            lvRecent.View = View.Details;
-            lvRecent.Size = new Size(pnlRecent.Width - 30, 230);
-            lvRecent.Location = new Point(15, 50);
-            lvRecent.BorderStyle = BorderStyle.None;
-            lvRecent.FullRowSelect = true;
-            lvRecent.Columns.Add("Thời gian", 120);
-            lvRecent.Columns.Add("Hoạt động", 250);
-
-            // Thêm dữ liệu mẫu
-            string[] times = { "Hôm nay, 10:45", "Hôm nay, 09:30", "Hôm qua, 15:20", "Hôm qua, 11:15", "20/05/2025, 14:30" };
-            string[] activities = {
-        "Nguyễn Văn A mượn sách 'Lập trình C#'",
-        "Trần Thị B trả sách 'Toán cao cấp'",
-        "Thêm 5 sách mới vào thư viện",
-        "Lê Văn C đăng ký thành viên mới",
-        "Phạm Thị D gia hạn mượn sách"
-    };
-
-            for (int i = 0; i < times.Length; i++)
-            {
-                ListViewItem item = new ListViewItem(times[i]);
-                item.SubItems.Add(activities[i]);
-                lvRecent.Items.Add(item);
-            }
-
-            pnlRecent.Controls.Add(lvRecent);
-
-            // Panel sách phổ biến
-            Panel pnlPopular = new Panel();
-            pnlPopular.Size = new Size((pnlContent.Width - 90) / 2, 300);
-            pnlPopular.Location = new Point(pnlRecent.Right + 30, 170);
-            pnlPopular.BackColor = Color.White;
-            pnlPopular.Paint += (s, e) => DrawPanelBorder(s, e, pnlPopular);
-
-            // Tiêu đề
-            Label lblPopularTitle = new Label();
-            lblPopularTitle.Text = "Sách phổ biến";
-            lblPopularTitle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            lblPopularTitle.ForeColor = primaryDarkColor;
-            lblPopularTitle.Location = new Point(15, 15);
-            lblPopularTitle.AutoSize = true;
-            pnlPopular.Controls.Add(lblPopularTitle);
-
-            // Thêm các sách phổ biến dưới dạng ListBox hoặc FlowLayoutPanel
-
-            // Thêm tất cả panel vào panel nội dung
-            pnlContent.Controls.Add(pnlStats);
-            pnlContent.Controls.Add(pnlRecent);
-            pnlContent.Controls.Add(pnlPopular);
+            fDashboard dashboard = new fDashboard();
+            dashboard.TopLevel = false;
+            dashboard.FormBorderStyle = FormBorderStyle.None;
+            dashboard.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(dashboard);
+            dashboard.Show();
         }
 
         // Hàm vẽ viền bo tròn và đổ bóng cho panel

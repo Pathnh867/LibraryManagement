@@ -105,7 +105,7 @@ namespace LibraryManagement
 
             try
             {
-                // Kiểm tra xem thể loại đã tồn tại chưa
+                // Kiểm tra xem thể loại đã tồn tại chưa - sửa lỗi LINQ
                 var existingCategory = context.Categories.FirstOrDefault(c => c.Name.ToLower() == newCategoryName.ToLower());
                 if (existingCategory != null)
                 {
@@ -147,7 +147,7 @@ namespace LibraryManagement
 
             try
             {
-                // Kiểm tra xem tác giả đã tồn tại chưa
+                // Kiểm tra xem tác giả đã tồn tại chưa - sửa lỗi LINQ
                 var existingAuthor = context.Authors.FirstOrDefault(a => a.Name.ToLower() == newAuthorName.ToLower());
                 if (existingAuthor != null)
                 {
@@ -511,7 +511,8 @@ namespace LibraryManagement
 
         private int GetOrCreateCategory(string categoryName)
         {
-            var category = context.Categories.FirstOrDefault(c => c.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase));
+            // Sửa lỗi LINQ - không sử dụng StringComparison trong EF
+            var category = context.Categories.FirstOrDefault(c => c.Name.ToLower() == categoryName.ToLower());
 
             if (category == null)
             {
@@ -530,7 +531,8 @@ namespace LibraryManagement
 
         private int GetOrCreateAuthor(string authorName)
         {
-            var author = context.Authors.FirstOrDefault(a => a.Name.Equals(authorName, StringComparison.OrdinalIgnoreCase));
+            // Sửa lỗi LINQ - không sử dụng StringComparison trong EF
+            var author = context.Authors.FirstOrDefault(a => a.Name.ToLower() == authorName.ToLower());
 
             if (author == null)
             {
@@ -728,6 +730,7 @@ namespace LibraryManagement
                 }
             }
         }
+
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             if (btnRefresh.Text == "Làm mới")
@@ -832,74 +835,6 @@ namespace LibraryManagement
                 btnSearch_Click(sender, e);
                 e.SuppressKeyPress = true; // Ngăn tiếng beep
             }
-        }
-
-        // Thêm phương thức xuất dữ liệu sách ra Excel
-        private void ExportToExcel()
-        {
-            try
-            {
-                // Tạo SaveFileDialog để chọn vị trí lưu file
-                SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx",
-                    Title = "Xuất danh sách sách ra Excel",
-                    FileName = "DanhSachSach_" + DateTime.Now.ToString("yyyyMMdd")
-                };
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Hiển thị thông báo đang xử lý
-                    MessageBox.Show("Đang xuất dữ liệu ra Excel. Vui lòng đợi...", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // TODO: Triển khai code xuất Excel thực tế ở đây
-                    // Sử dụng thư viện như EPPlus hoặc ClosedXML
-
-                    MessageBox.Show("Xuất dữ liệu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi xuất Excel: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Tạo nút xuất Excel và thêm vào form
-        private void CreateExportButton()
-        {
-            Button btnExport = new Button();
-            btnExport.Text = "Xuất Excel";
-            btnExport.Size = new Size(96, 29);
-            btnExport.Location = new Point(500 - 110, 15); // Đặt trước nút Tạo mới
-            btnExport.BackColor = Color.FromArgb(34, 139, 34); // Màu xanh lá
-            btnExport.ForeColor = Color.White;
-            btnExport.FlatStyle = FlatStyle.Flat;
-            btnExport.FlatAppearance.BorderSize = 0;
-            btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnExport.Click += (s, e) => ExportToExcel();
-
-            // Thêm hiệu ứng hover
-            btnExport.MouseEnter += (s, e) => btnExport.BackColor = Color.FromArgb(0, 120, 0);
-            btnExport.MouseLeave += (s, e) => btnExport.BackColor = Color.FromArgb(34, 139, 34);
-
-            // Áp dụng bo góc
-            ApplyRoundedCorners(btnExport, 8);
-
-            // Thêm vào panel
-            pnlDataGird.Controls.Add(btnExport);
-        }
-
-        // Phương thức thêm vào Load để khởi tạo các component mới
-        private void InitializeCustomComponents()
-        {
-            CreateCustomControls(); // Tạo controls ComboBox và nút + cho Category và Author
-            CreateExportButton();   // Tạo nút Xuất Excel
-
-            // Cập nhật lại vị trí của các nút nếu cần
-            btnAdd.Location = new Point(500, 15);
-            btnUpdate.Location = new Point(605, 15);
-            btnDelete.Location = new Point(710, 15);
-            btnRefresh.Location = new Point(815, 15);
         }
 
         #endregion

@@ -85,7 +85,7 @@
             pnlBookInfo.Controls.Add(lblBookInfo);
             pnlBookInfo.Location = new Point(20, 20);
             pnlBookInfo.Name = "pnlBookInfo";
-            pnlBookInfo.Size = new Size(930, 260);
+            pnlBookInfo.Size = new Size(930, 280);
             pnlBookInfo.TabIndex = 1;
             // 
             // txtDescription
@@ -237,7 +237,7 @@
             pnlSearch.Controls.Add(btnSearch);
             pnlSearch.Controls.Add(txtSearch);
             pnlSearch.Controls.Add(lblSearch);
-            pnlSearch.Location = new Point(20, 283);
+            pnlSearch.Location = new Point(20, 310);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(930, 60);
             pnlSearch.TabIndex = 2;
@@ -285,7 +285,7 @@
             pnlDataGird.Controls.Add(dgvBooks);
             pnlDataGird.Controls.Add(lblBookList);
             pnlDataGird.ForeColor = SystemColors.ButtonHighlight;
-            pnlDataGird.Location = new Point(20, 350);
+            pnlDataGird.Location = new Point(20, 380);
             pnlDataGird.Name = "pnlDataGird";
             pnlDataGird.Size = new Size(930, 250);
             pnlDataGird.TabIndex = 3;

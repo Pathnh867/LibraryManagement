@@ -50,13 +50,13 @@
             txtSearch = new TextBox();
             lblSearch = new Label();
             pnlDataGird = new Panel();
+            btnRefresh = new Button();
+            btnDelete = new Button();
+            btnUpdate = new Button();
+            btnAdd = new Button();
             pictureBox1 = new PictureBox();
             dgvBooks = new DataGridView();
             lblBookList = new Label();
-            btnAdd = new Button();
-            button1 = new Button();
-            btnDelete = new Button();
-            button2 = new Button();
             pnlBookInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numTotalCopies).BeginInit();
             pnlSearch.SuspendLayout();
@@ -254,6 +254,7 @@
             btnSearch.TabIndex = 2;
             btnSearch.Text = "Tìm kiếm";
             btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
             // 
             // txtSearch
             // 
@@ -276,9 +277,9 @@
             // pnlDataGird
             // 
             pnlDataGird.BackColor = Color.White;
-            pnlDataGird.Controls.Add(button2);
+            pnlDataGird.Controls.Add(btnRefresh);
             pnlDataGird.Controls.Add(btnDelete);
-            pnlDataGird.Controls.Add(button1);
+            pnlDataGird.Controls.Add(btnUpdate);
             pnlDataGird.Controls.Add(btnAdd);
             pnlDataGird.Controls.Add(pictureBox1);
             pnlDataGird.Controls.Add(dgvBooks);
@@ -288,6 +289,66 @@
             pnlDataGird.Name = "pnlDataGird";
             pnlDataGird.Size = new Size(930, 250);
             pnlDataGird.TabIndex = 3;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.BackColor = Color.FromArgb(129, 195, 215);
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.Location = new Point(815, 15);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(96, 29);
+            btnRefresh.TabIndex = 6;
+            btnRefresh.Text = "Làm mới";
+            btnRefresh.UseVisualStyleBackColor = false;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.BackColor = Color.FromArgb(192, 0, 0);
+            btnDelete.FlatAppearance.BorderSize = 0;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDelete.ForeColor = Color.White;
+            btnDelete.Location = new Point(710, 15);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(96, 29);
+            btnDelete.TabIndex = 5;
+            btnDelete.Text = "Xóa";
+            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnUpdate
+            // 
+            btnUpdate.BackColor = Color.FromArgb(210, 121, 106);
+            btnUpdate.FlatAppearance.BorderSize = 0;
+            btnUpdate.FlatStyle = FlatStyle.Flat;
+            btnUpdate.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnUpdate.ForeColor = Color.White;
+            btnUpdate.Location = new Point(605, 15);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(96, 29);
+            btnUpdate.TabIndex = 4;
+            btnUpdate.Text = "Cập nhật";
+            btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
+            // 
+            // btnAdd
+            // 
+            btnAdd.BackColor = Color.FromArgb(210, 121, 106);
+            btnAdd.FlatAppearance.BorderSize = 0;
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdd.ForeColor = Color.White;
+            btnAdd.Location = new Point(500, 15);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(96, 29);
+            btnAdd.TabIndex = 3;
+            btnAdd.Text = "Tạo mới";
+            btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
             // pictureBox1
             // 
@@ -314,6 +375,7 @@
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.Size = new Size(900, 180);
             dgvBooks.TabIndex = 1;
+            dgvBooks.SelectionChanged += dgvBooks_SelectionChanged;
             // 
             // lblBookList
             // 
@@ -325,62 +387,6 @@
             lblBookList.Size = new Size(194, 28);
             lblBookList.TabIndex = 0;
             lblBookList.Text = "DANH SÁCH SÁCH ";
-            // 
-            // btnAdd
-            // 
-            btnAdd.BackColor = Color.FromArgb(210, 121, 106);
-            btnAdd.FlatAppearance.BorderSize = 0;
-            btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(500, 15);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(96, 29);
-            btnAdd.TabIndex = 3;
-            btnAdd.Text = "Tạo mới";
-            btnAdd.UseVisualStyleBackColor = false;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.FromArgb(210, 121, 106);
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(605, 15);
-            button1.Name = "button1";
-            button1.Size = new Size(96, 29);
-            button1.TabIndex = 4;
-            button1.Text = "Cập nhật";
-            button1.UseVisualStyleBackColor = false;
-            // 
-            // btnDelete
-            // 
-            btnDelete.BackColor = Color.FromArgb(192, 0, 0);
-            btnDelete.FlatAppearance.BorderSize = 0;
-            btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDelete.ForeColor = Color.White;
-            btnDelete.Location = new Point(710, 15);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(96, 29);
-            btnDelete.TabIndex = 5;
-            btnDelete.Text = "Xóa";
-            btnDelete.UseVisualStyleBackColor = false;
-            // 
-            // button2
-            // 
-            button2.BackColor = Color.FromArgb(129, 195, 215);
-            button2.FlatAppearance.BorderSize = 0;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.ForeColor = Color.White;
-            button2.Location = new Point(815, 15);
-            button2.Name = "button2";
-            button2.Size = new Size(96, 29);
-            button2.TabIndex = 6;
-            button2.Text = "Làm mới";
-            button2.UseVisualStyleBackColor = false;
             // 
             // fBookManagement
             // 
@@ -395,6 +401,7 @@
             Name = "fBookManagement";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Quản lý sách";
+            Load += fBookManagement_Load;
             pnlBookInfo.ResumeLayout(false);
             pnlBookInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numTotalCopies).EndInit();
@@ -433,8 +440,8 @@
         private DataGridView dgvBooks;
         private PictureBox pictureBox1;
         private Button btnAdd;
-        private Button button1;
-        private Button button2;
+        private Button btnUpdate;
+        private Button btnRefresh;
         private Button btnDelete;
     }
 }

@@ -68,6 +68,9 @@ namespace LibraryManagement
                     case "btnSettings":
                         OpenSettings();
                         break;
+                    case "btnEmployees":
+                        OpenEmployeeManagement();
+                        break;
                     case "btnLogout":
                         Logout();
                         break;
@@ -186,7 +189,16 @@ namespace LibraryManagement
             pnlContent.Controls.Add(borrowForm);
             borrowForm.Show();
         }
-
+        private void OpenEmployeeManagement()
+        {
+            pnlContent.Controls.Clear();
+            fEmployeeManagement employeeForm = new fEmployeeManagement();
+            employeeForm.TopLevel = false;
+            employeeForm.FormBorderStyle = FormBorderStyle.None;
+            employeeForm.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(employeeForm);
+            employeeForm.Show();
+        }
         // Phương thức mở form thống kê báo cáo
         private void OpenStatistics()
         {
@@ -313,6 +325,7 @@ namespace LibraryManagement
             Button btnBooks = CreateMenuButton("btnBooks", "📚  Quản lý sách", 225);
             Button btnMembers = CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 280);
             Button btnBorrow = CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 335);
+            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 337);
             Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 390);
             Button btnSettings = CreateMenuButton("btnSettings", "⚙️  Cài đặt hệ thống", 445);
             Button btnLogout = CreateMenuButton("btnLogout", "🚪  Đăng xuất", 580);
@@ -322,6 +335,7 @@ namespace LibraryManagement
             pnlSidebar.Controls.Add(btnBooks);
             pnlSidebar.Controls.Add(btnMembers);
             pnlSidebar.Controls.Add(btnBorrow);
+            pnlSidebar.Controls.Add(btnEmployees);
             pnlSidebar.Controls.Add(btnStatistics);
             pnlSidebar.Controls.Add(btnSettings);
             pnlSidebar.Controls.Add(btnLogout);

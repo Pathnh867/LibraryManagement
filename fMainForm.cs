@@ -325,9 +325,9 @@ namespace LibraryManagement
             Button btnBooks = CreateMenuButton("btnBooks", "📚  Quản lý sách", 225);
             Button btnMembers = CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 280);
             Button btnBorrow = CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 335);
-            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 337);
-            Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 390);
-            Button btnSettings = CreateMenuButton("btnSettings", "⚙️  Cài đặt hệ thống", 445);
+            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 390);
+            Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 445);
+            Button btnSettings = CreateMenuButton("btnSettings", "⚙️  Cài đặt hệ thống", 500);
             Button btnLogout = CreateMenuButton("btnLogout", "🚪  Đăng xuất", 580);
 
             // Thêm các nút vào sidebar

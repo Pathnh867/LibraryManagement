@@ -24,10 +24,15 @@ namespace LibraryManagement
         public fEmployeeManagement()
         {
             InitializeComponent();
+            dgvEmployees.DataBindingComplete += DgvEmployees_DataBindingComplete;
             context = new LibraryDbContext(); //Tạo database context
             ApplyFormStyle(); //Thiết lập kiểu cho form
             LoadEmployeeData(); //Tải dữ liệu nhân viên
             SetControlState(false); //Thiết lập trạng thái điều khiển
+        }
+        private void DgvEmployees_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            FormatDataGridView();
         }
         private void ApplyFormStyle()
         {
@@ -137,7 +142,6 @@ namespace LibraryManagement
         {
             try
             {
-                //Truy vẫn dữ liệu từ database
                 var employees = context.Employees.OrderBy(e => e.Name).Select(e => new
                 {
                     e.EmployeeId,
@@ -145,14 +149,13 @@ namespace LibraryManagement
                     e.Email,
                     RoleText = Utility.GetRoleText(e.RoleId),
                     e.RoleId,
-                    StatusText = e.Status ? "Hoạt động" : "Tạm khóa", //Convert status thành text
+                    StatusText = e.Status ? "Hoạt động" : "Tạm khóa",
                     e.Status
                 })
                 .ToList();
-                employeeBindingSource.DataSource = employees; //Gán dữ liệu cho BindingSource
-                dgvEmployees.DataSource = employeeBindingSource; //Gán BindingSource cho DataGridView
-                //Format DataGridView
-                FormatDataGridView();
+                employeeBindingSource.DataSource = employees;
+                dgvEmployees.DataSource = employeeBindingSource;
+                // Không gọi FormatDataGridView() ở đây nữa
             }
             catch (Exception ex)
             {
@@ -161,25 +164,41 @@ namespace LibraryManagement
         }
         private void FormatDataGridView()
         {
+            // Kiểm tra nếu không có columns nào
+            if (dgvEmployees.Columns.Count == 0)
+                return;
+
             // Đặt tên tiêu đề cột
-            dgvEmployees.Columns["EmployeeId"].HeaderText = "Mã NV";
-            dgvEmployees.Columns["Name"].HeaderText = "Họ và tên";
-            dgvEmployees.Columns["Email"].HeaderText = "Email";
-            dgvEmployees.Columns["RoleText"].HeaderText = "Vai trò";
-            dgvEmployees.Columns["StatusText"].HeaderText = "Trạng thái";
+            if (dgvEmployees.Columns["EmployeeId"] != null)
+                dgvEmployees.Columns["EmployeeId"].HeaderText = "Mã NV";
+            if (dgvEmployees.Columns["Name"] != null)
+                dgvEmployees.Columns["Name"].HeaderText = "Họ và tên";
+            if (dgvEmployees.Columns["Email"] != null)
+                dgvEmployees.Columns["Email"].HeaderText = "Email";
+            if (dgvEmployees.Columns["RoleText"] != null)
+                dgvEmployees.Columns["RoleText"].HeaderText = "Vai trò";
+            if (dgvEmployees.Columns["StatusText"] != null)
+                dgvEmployees.Columns["StatusText"].HeaderText = "Trạng thái";
 
             // Ẩn các cột không cần thiết
-            dgvEmployees.Columns["RoleId"].Visible = false;
-            dgvEmployees.Columns["Status"].Visible = false;
+            if (dgvEmployees.Columns["RoleId"] != null)
+                dgvEmployees.Columns["RoleId"].Visible = false;
+            if (dgvEmployees.Columns["Status"] != null)
+                dgvEmployees.Columns["Status"].Visible = false;
 
             // Đặt độ rộng cột
-            dgvEmployees.Columns["EmployeeId"].Width = 80;
-            dgvEmployees.Columns["Name"].Width = 200;
-            dgvEmployees.Columns["Email"].Width = 250;
-            dgvEmployees.Columns["RoleText"].Width = 150;
-            dgvEmployees.Columns["StatusText"].Width = 100;
+            if (dgvEmployees.Columns["EmployeeId"] != null)
+                dgvEmployees.Columns["EmployeeId"].Width = 80;
+            if (dgvEmployees.Columns["Name"] != null)
+                dgvEmployees.Columns["Name"].Width = 200;
+            if (dgvEmployees.Columns["Email"] != null)
+                dgvEmployees.Columns["Email"].Width = 250;
+            if (dgvEmployees.Columns["RoleText"] != null)
+                dgvEmployees.Columns["RoleText"].Width = 150;
+            if (dgvEmployees.Columns["StatusText"] != null)
+                dgvEmployees.Columns["StatusText"].Width = 100;
 
-            // Styling DataGridView
+            // Phần còn lại của code giữ nguyên
             dgvEmployees.ForeColor = Color.FromArgb(64, 64, 64);
             dgvEmployees.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
 
@@ -200,6 +219,84 @@ namespace LibraryManagement
             dgvEmployees.GridColor = Color.FromArgb(224, 224, 224);
             dgvEmployees.BorderStyle = BorderStyle.None;
             dgvEmployees.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        }
+
+        private void SetupDataGridView()
+        {
+            // Thiết lập style chung cho DataGridView
+            dgvEmployees.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvEmployees.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvEmployees.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvEmployees.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(210, 121, 106);
+            dgvEmployees.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvEmployees.EnableHeadersVisualStyles = false;
+            dgvEmployees.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 245, 245);
+            dgvEmployees.DefaultCellStyle.BackColor = Color.White;
+            dgvEmployees.DefaultCellStyle.SelectionBackColor = Color.FromArgb(210, 121, 106);
+            dgvEmployees.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvEmployees.RowTemplate.Height = 28;
+            dgvEmployees.GridColor = Color.FromArgb(224, 224, 224);
+            dgvEmployees.BorderStyle = BorderStyle.None;
+            dgvEmployees.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        }
+
+        private void FormatGridColumns()
+        {
+            // Đảm bảo rằng DataGridView có cột trước khi thực hiện định dạng
+            if (dgvEmployees == null || dgvEmployees.Columns == null || dgvEmployees.Columns.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                // An toàn kiểm tra và định dạng từng cột
+                if (dgvEmployees.Columns.Contains("EmployeeId"))
+                {
+                    dgvEmployees.Columns["EmployeeId"].HeaderText = "Mã NV";
+                    dgvEmployees.Columns["EmployeeId"].Width = 80;
+                }
+
+                if (dgvEmployees.Columns.Contains("Name"))
+                {
+                    dgvEmployees.Columns["Name"].HeaderText = "Họ và tên";
+                    dgvEmployees.Columns["Name"].Width = 200;
+                }
+
+                if (dgvEmployees.Columns.Contains("Email"))
+                {
+                    dgvEmployees.Columns["Email"].HeaderText = "Email";
+                    dgvEmployees.Columns["Email"].Width = 250;
+                }
+
+                if (dgvEmployees.Columns.Contains("RoleText"))
+                {
+                    dgvEmployees.Columns["RoleText"].HeaderText = "Vai trò";
+                    dgvEmployees.Columns["RoleText"].Width = 150;
+                }
+
+                if (dgvEmployees.Columns.Contains("StatusText"))
+                {
+                    dgvEmployees.Columns["StatusText"].HeaderText = "Trạng thái";
+                    dgvEmployees.Columns["StatusText"].Width = 100;
+                }
+
+                // Ẩn các cột không cần thiết
+                if (dgvEmployees.Columns.Contains("RoleId"))
+                {
+                    dgvEmployees.Columns["RoleId"].Visible = false;
+                }
+
+                if (dgvEmployees.Columns.Contains("Status"))
+                {
+                    dgvEmployees.Columns["Status"].Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần - tránh làm gián đoạn quá trình tải dữ liệu
+                System.Diagnostics.Debug.WriteLine("Lỗi khi định dạng cột: " + ex.Message);
+            }
         }
 
         //Xóa dữ liệu trên form
@@ -777,8 +874,13 @@ namespace LibraryManagement
 
         private void dgvEmployees_DoubleClick(object sender, EventArgs e)
         {
-
+            if (dgvEmployees.SelectedRows.Count > 0 && dgvEmployees.SelectedRows[0].Cells["EmployeeId"].Value != null)
+            {
+                int employeeId = (int)dgvEmployees.SelectedRows[0].Cells["EmployeeId"].Value;
+                ShowEmployeeDetail(employeeId);
+            }
         }
+
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {

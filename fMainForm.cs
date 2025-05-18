@@ -201,8 +201,20 @@ namespace LibraryManagement
         }
         // Phương thức mở form thống kê báo cáo
         private void OpenStatistics()
-        {
-            // Hiện thực phần này khi bạn có form thống kê
+        {  // Xóa nội dung hiện tại
+            pnlContent.Controls.Clear();
+
+            // Tạo instance của form thống kê
+            fStatistics statisticsForm = new fStatistics();
+
+            // Cấu hình form con
+            statisticsForm.TopLevel = false;
+            statisticsForm.FormBorderStyle = FormBorderStyle.None;
+            statisticsForm.Dock = DockStyle.Fill;
+
+            // Thêm form con vào panel nội dung
+            pnlContent.Controls.Add(statisticsForm);
+            statisticsForm.Show();
         }
 
         // Phương thức mở form cài đặt
@@ -343,6 +355,17 @@ namespace LibraryManagement
             // Kích hoạt nút Dashboard mặc định
             ActivateButton(btnDashboard);
 
+            // Kiểm tra quyền hạn trước khi thêm nút
+            if (Utility.HasPermission(2)) // Thủ thư trở lên
+            {
+                pnlSidebar.Controls.Add(btnStatistics);
+            }
+
+            if (Utility.HasPermission(1)) // Chỉ quản trị viên
+            {
+                pnlSidebar.Controls.Add(btnEmployees);
+                pnlSidebar.Controls.Add(btnSettings);
+            }
             // Thiết lập thông tin người dùng
             if (Utility.CurrentEmployee != null)
             {

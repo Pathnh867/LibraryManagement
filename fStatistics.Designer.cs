@@ -98,6 +98,7 @@
             btnGenerate.Text = "Tạo báo cáo";
             toolTip1.SetToolTip(btnGenerate, "Tạo báo cáo với thông tin đã chọn");
             btnGenerate.UseVisualStyleBackColor = false;
+            btnGenerate.Click += BtnGenerate_Click;
             // 
             // cboReportType
             // 
@@ -110,6 +111,7 @@
             cboReportType.Size = new Size(150, 28);
             cboReportType.TabIndex = 2;
             toolTip1.SetToolTip(cboReportType, "Chọn loại báo cáo muốn tạo");
+            cboReportType.SelectedIndexChanged += CboReportType_SelectedIndexChanged;
             // 
             // lblReportType
             // 
@@ -131,6 +133,7 @@
             dtpToDate.Size = new Size(150, 27);
             dtpToDate.TabIndex = 1;
             toolTip1.SetToolTip(dtpToDate, "Chọn ngày kết thúc của khoảng thời gian báo cáo");
+            dtpToDate.ValueChanged += DtpToDate_ValueChanged;
             // 
             // lblToDate
             // 
@@ -152,6 +155,7 @@
             dtpFromDate.Size = new Size(150, 27);
             dtpFromDate.TabIndex = 0;
             toolTip1.SetToolTip(dtpFromDate, "Chọn ngày bắt đầu của khoảng thời gian báo cáo");
+            dtpFromDate.ValueChanged += DtpFromDate_ValueChanged;
             // 
             // lblFromDate
             // 
@@ -189,6 +193,7 @@
             tcReports.Size = new Size(930, 400);
             tcReports.TabIndex = 0;
             toolTip1.SetToolTip(tcReports, "Dữ liệu báo cáo được hiển thị theo từng tab");
+            tcReports.SelectedIndexChanged += TcReports_SelectedIndexChanged;
             // 
             // tpOverview
             // 
@@ -339,6 +344,7 @@
             btnPrint.Text = "🖨️ In";
             toolTip1.SetToolTip(btnPrint, "In báo cáo trực tiếp");
             btnPrint.UseVisualStyleBackColor = false;
+            btnPrint.Click += BtnPrint_Click;
             // 
             // btnExportPdf
             // 
@@ -355,6 +361,7 @@
             btnExportPdf.Text = "📄 Xuất PDF";
             toolTip1.SetToolTip(btnExportPdf, "Xuất báo cáo dạng file PDF");
             btnExportPdf.UseVisualStyleBackColor = false;
+            btnExportPdf.Click += BtnExportPdf_Click;
             // 
             // btnExportExcel
             // 
@@ -371,6 +378,7 @@
             btnExportExcel.Text = "📊 Xuất Excel";
             toolTip1.SetToolTip(btnExportExcel, "Xuất dữ liệu ra file Excel (.xlsx)");
             btnExportExcel.UseVisualStyleBackColor = false;
+            btnExportExcel.Click += BtnExportExcel_Click;
             // 
             // lblExport
             // 

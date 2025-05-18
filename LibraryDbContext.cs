@@ -22,7 +22,25 @@ namespace LibraryManagement
         // Cấu hình kết nối đến CSDL
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["LibraryDB"].ConnectionString);
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = ConfigurationManager.ConnectionStrings["LibraryDB"]?.ConnectionString;
+
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    optionsBuilder.UseSqlServer(connectionString, options =>
+                    {
+                        // Thêm retry policy để xử lý transient failures
+                        options.EnableRetryOnFailure(
+                            maxRetryCount: 3,
+                            maxRetryDelay: TimeSpan.FromSeconds(5),
+                            errorNumbersToAdd: null);
+
+                        // Tăng command timeout
+                        options.CommandTimeout(60);
+                    });
+                }
+            }
         }
 
         // Cấu hình mô hình và tạo dữ liệu mẫu

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,31 +37,78 @@ namespace LibraryManagement
                 return;
             }
 
-            using (var context = new LibraryDbContext())
+            // Bật hiệu ứng loading
+            StartLoading();
+
+            try
             {
-                var employee = context.Employees
-                                    .Where(e => e.Email == username && e.Password == password && e.Status == true)
-                                    .FirstOrDefault();
-
-                if (employee != null)
+                using (var context = new LibraryDbContext())
                 {
-                    // Lưu thông tin người dùng hiện tại
-                    Utility.CurrentEmployee = employee;
+                    var employee = context.Employees
+                                        .Where(e => e.Email == username && e.Password == password && e.Status == true)
+                                        .FirstOrDefault();
 
-                    // Mở form chính
-                    var mainForm = new fMainForm();
-                    this.Hide();
-                    mainForm.ShowDialog();
-                    this.Close();
+                    if (employee != null)
+                    {
+                        // Lưu thông tin người dùng hiện tại
+                        Utility.CurrentEmployee = employee;
+
+                        // Mở form chính
+                        var mainForm = new fMainForm();
+                        this.Hide();
+                        mainForm.ShowDialog();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi kết nối: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Tắt hiệu ứng loading
+                StopLoading();
             }
         }
 
+        private void StartLoading()
+        {
+            // Thay đổi text button và disable
+            btnLogin.Enabled = false;
+            btnLogin.Text = "Đang đăng nhập...";
+
+            // Thay đổi cursor
+            this.Cursor = Cursors.WaitCursor;
+
+            // Disable các control khác
+            txtUsername.Enabled = false;
+            txtPassword.Enabled = false;
+            btnExit.Enabled = false;
+
+            // Force repaint
+            Application.DoEvents();
+        }
+
+        private void StopLoading()
+        {
+            // Khôi phục trạng thái ban đầu
+            btnLogin.Enabled = true;
+            btnLogin.Text = "ĐĂNG NHẬP";
+
+            // Khôi phục cursor
+            this.Cursor = Cursors.Default;
+
+            // Enable lại các control
+            txtUsername.Enabled = true;
+            txtPassword.Enabled = true;
+            btnExit.Enabled = true;
+        }
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();

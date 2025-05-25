@@ -141,3 +141,4 @@ C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\System.Security.Cryptography.Xml.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.fLocationManagement.resources
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.fLostBookManagement.resources

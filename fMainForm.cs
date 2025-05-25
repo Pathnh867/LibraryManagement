@@ -56,6 +56,9 @@ namespace LibraryManagement
                     case "btnBooks":
                         OpenBookManagement();
                         break;
+                    case "btnLocations":
+                        OpenLocationManagement();
+                        break;
                     case "btnMembers":
                         OpenMemberManagement();
                         break;
@@ -216,7 +219,16 @@ namespace LibraryManagement
             pnlContent.Controls.Add(statisticsForm);
             statisticsForm.Show();
         }
-
+        private void OpenLocationManagement()
+        {
+            pnlContent.Controls.Clear();
+            fLocationManagement locationForm = new fLocationManagement();
+            locationForm.TopLevel = false;
+            locationForm.FormBorderStyle = FormBorderStyle.None;
+            locationForm.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(locationForm);
+            locationForm.Show();
+        }
         // Phương thức mở form cài đặt
         private void OpenSettings()
         {
@@ -337,6 +349,7 @@ namespace LibraryManagement
             Button btnBooks = CreateMenuButton("btnBooks", "📚  Quản lý sách", 225);
             Button btnMembers = CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 280);
             Button btnBorrow = CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 335);
+            Button btnLocations = CreateMenuButton("btnLocations", "📍  Quản lý vị trí", 500);
             Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 390);
             Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 445);
             Button btnSettings = CreateMenuButton("btnSettings", "⚙️  Cài đặt hệ thống", 500);
@@ -347,6 +360,7 @@ namespace LibraryManagement
             pnlSidebar.Controls.Add(btnBooks);
             pnlSidebar.Controls.Add(btnMembers);
             pnlSidebar.Controls.Add(btnBorrow);
+            pnlSidebar.Controls.Add(btnLocations);
             pnlSidebar.Controls.Add(btnEmployees);
             pnlSidebar.Controls.Add(btnStatistics);
             pnlSidebar.Controls.Add(btnSettings);

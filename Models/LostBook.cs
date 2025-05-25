@@ -30,5 +30,6 @@ namespace LibraryManagement.Models
 
         [StringLength(500, ErrorMessage = "Ghi chú không được vượt quá 500 ký tự")]
         public string Notes { get; set; }
+        public string Description { get; internal set; }
     }
 }

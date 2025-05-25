@@ -33,7 +33,7 @@
             lblNotes = new Label();
             txtReason = new TextBox();
             lblReason = new Label();
-            dateTimePicker1 = new DateTimePicker();
+            dtpReportDate = new DateTimePicker();
             cboEmployee = new ComboBox();
             txtBookTitle = new TextBox();
             btnSelectCopy = new Button();
@@ -51,17 +51,17 @@
             txtSearch = new TextBox();
             lblSearch = new Label();
             pnlDataGrid = new Panel();
-            dgvLocations = new DataGridView();
+            dgvLostBooks = new DataGridView();
             pictureBox1 = new PictureBox();
             btnRefresh = new Button();
             btnDelete = new Button();
             btnUpdate = new Button();
             btnAdd = new Button();
-            lblLocationList = new Label();
+            lblLostBookList = new Label();
             pnlLostBookInfo.SuspendLayout();
             pnlSearch.SuspendLayout();
             pnlDataGrid.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvLocations).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvLostBooks).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -71,7 +71,7 @@
             pnlLostBookInfo.Controls.Add(lblNotes);
             pnlLostBookInfo.Controls.Add(txtReason);
             pnlLostBookInfo.Controls.Add(lblReason);
-            pnlLostBookInfo.Controls.Add(dateTimePicker1);
+            pnlLostBookInfo.Controls.Add(dtpReportDate);
             pnlLostBookInfo.Controls.Add(cboEmployee);
             pnlLostBookInfo.Controls.Add(txtBookTitle);
             pnlLostBookInfo.Controls.Add(btnSelectCopy);
@@ -120,13 +120,13 @@
             lblReason.TabIndex = 15;
             lblReason.Text = "Lý do:";
             // 
-            // dateTimePicker1
+            // dtpReportDate
             // 
-            dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.Location = new Point(155, 192);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(126, 27);
-            dateTimePicker1.TabIndex = 3;
+            dtpReportDate.Format = DateTimePickerFormat.Short;
+            dtpReportDate.Location = new Point(155, 192);
+            dtpReportDate.Name = "dtpReportDate";
+            dtpReportDate.Size = new Size(126, 27);
+            dtpReportDate.TabIndex = 3;
             // 
             // cboEmployee
             // 
@@ -300,33 +300,34 @@
             // pnlDataGrid
             // 
             pnlDataGrid.BackColor = Color.White;
-            pnlDataGrid.Controls.Add(dgvLocations);
+            pnlDataGrid.Controls.Add(dgvLostBooks);
             pnlDataGrid.Controls.Add(pictureBox1);
             pnlDataGrid.Controls.Add(btnRefresh);
             pnlDataGrid.Controls.Add(btnDelete);
             pnlDataGrid.Controls.Add(btnUpdate);
             pnlDataGrid.Controls.Add(btnAdd);
-            pnlDataGrid.Controls.Add(lblLocationList);
+            pnlDataGrid.Controls.Add(lblLostBookList);
             pnlDataGrid.Location = new Point(20, 380);
             pnlDataGrid.Name = "pnlDataGrid";
             pnlDataGrid.Size = new Size(930, 250);
             pnlDataGrid.TabIndex = 19;
             // 
-            // dgvLocations
+            // dgvLostBooks
             // 
-            dgvLocations.AllowUserToAddRows = false;
-            dgvLocations.AllowUserToDeleteRows = false;
-            dgvLocations.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvLocations.BackgroundColor = Color.White;
-            dgvLocations.BorderStyle = BorderStyle.None;
-            dgvLocations.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLocations.Location = new Point(15, 50);
-            dgvLocations.Name = "dgvLocations";
-            dgvLocations.ReadOnly = true;
-            dgvLocations.RowHeadersWidth = 51;
-            dgvLocations.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLocations.Size = new Size(900, 180);
-            dgvLocations.TabIndex = 7;
+            dgvLostBooks.AllowUserToAddRows = false;
+            dgvLostBooks.AllowUserToDeleteRows = false;
+            dgvLostBooks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLostBooks.BackgroundColor = Color.White;
+            dgvLostBooks.BorderStyle = BorderStyle.None;
+            dgvLostBooks.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvLostBooks.Location = new Point(15, 50);
+            dgvLostBooks.Name = "dgvLostBooks";
+            dgvLostBooks.ReadOnly = true;
+            dgvLostBooks.RowHeadersWidth = 51;
+            dgvLostBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvLostBooks.Size = new Size(900, 180);
+            dgvLostBooks.TabIndex = 7;
+            dgvLostBooks.CellClick += dgvLostBooks_CellClick;
             // 
             // pictureBox1
             // 
@@ -379,6 +380,7 @@
             btnUpdate.TabIndex = 1;
             btnUpdate.Text = "Cập nhật";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
             // 
             // btnAdd
             // 
@@ -393,17 +395,18 @@
             btnAdd.TabIndex = 0;
             btnAdd.Text = "Báo cáo bị mất";
             btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
-            // lblLocationList
+            // lblLostBookList
             // 
-            lblLocationList.AutoSize = true;
-            lblLocationList.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblLocationList.ForeColor = Color.FromArgb(210, 121, 106);
-            lblLocationList.Location = new Point(15, 15);
-            lblLocationList.Name = "lblLocationList";
-            lblLocationList.Size = new Size(192, 28);
-            lblLocationList.TabIndex = 0;
-            lblLocationList.Text = "DANH SÁCH VỊ TRÍ";
+            lblLostBookList.AutoSize = true;
+            lblLostBookList.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblLostBookList.ForeColor = Color.FromArgb(210, 121, 106);
+            lblLostBookList.Location = new Point(15, 15);
+            lblLostBookList.Name = "lblLostBookList";
+            lblLostBookList.Size = new Size(192, 28);
+            lblLostBookList.TabIndex = 0;
+            lblLostBookList.Text = "DANH SÁCH VỊ TRÍ";
             // 
             // fLostBookManagement
             // 
@@ -418,13 +421,14 @@
             Name = "fLostBookManagement";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Quản lý sách bị mất";
+            Load += fLostBookManagement_Load;
             pnlLostBookInfo.ResumeLayout(false);
             pnlLostBookInfo.PerformLayout();
             pnlSearch.ResumeLayout(false);
             pnlSearch.PerformLayout();
             pnlDataGrid.ResumeLayout(false);
             pnlDataGrid.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvLocations).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvLostBooks).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
@@ -444,7 +448,7 @@
         private Button btnSelectCopy;
         private TextBox txtBookTitle;
         private ComboBox cboEmployee;
-        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dtpReportDate;
         private Label lblReason;
         private TextBox txtReason;
         private Label lblNotes;
@@ -453,12 +457,12 @@
         private TextBox txtSearch;
         private Label lblSearch;
         private Panel pnlDataGrid;
-        private DataGridView dgvLocations;
+        private DataGridView dgvLostBooks;
         private PictureBox pictureBox1;
         private Button btnRefresh;
         private Button btnDelete;
         private Button btnUpdate;
         private Button btnAdd;
-        private Label lblLocationList;
+        private Label lblLostBookList;
     }
 }

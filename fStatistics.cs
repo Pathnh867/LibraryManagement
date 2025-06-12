@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using LibraryManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
 
 namespace LibraryManagement
 {
@@ -39,8 +41,7 @@ namespace LibraryManagement
             // Thiết lập giá trị mặc định
             SetDefaultValues();
 
-            // Gán sự kiện
-            AttachEvents();
+ 
 
             // Tải dữ liệu ban đầu
             LoadInitialData();
@@ -56,25 +57,7 @@ namespace LibraryManagement
             cboReportType.SelectedIndex = 0;
         }
 
-        private void AttachEvents()
-        {
-            // Gán sự kiện cho các nút
-            btnGenerate.Click += BtnGenerate_Click;
-            btnExportExcel.Click += BtnExportExcel_Click;
-            btnExportPdf.Click += BtnExportPdf_Click;
-            btnPrint.Click += BtnPrint_Click;
-
-            // Gán sự kiện cho tab control
-            tcReports.SelectedIndexChanged += TcReports_SelectedIndexChanged;
-
-            // Gán sự kiện cho combo box
-            cboReportType.SelectedIndexChanged += CboReportType_SelectedIndexChanged;
-
-            // Gán sự kiện validation cho DateTimePicker
-            dtpFromDate.ValueChanged += DtpFromDate_ValueChanged;
-            dtpToDate.ValueChanged += DtpToDate_ValueChanged;
-        }
-
+       
         private void LoadInitialData()
         {
             // Tải dữ liệu tổng quan ban đầu
@@ -764,14 +747,14 @@ namespace LibraryManagement
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
-                    ExportToRTF(saveDialog.FileName);
+                    ExportToPdf(saveDialog.FileName);
                     MessageBox.Show($"Xuất PDF thành công!\nFile đã được lưu tại: {saveDialog.FileName}",
                         "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi xuất RTF: " + ex.Message, "Lỗi",
+                MessageBox.Show("Lỗi khi xuất PDF: " + ex.Message, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -809,6 +792,55 @@ namespace LibraryManagement
                     WriteDataGridToCSV(writer, currentGrid);
                 }
             }
+        }
+        private void ExportToPdf(string fileName)
+        {
+            PdfDocument document = new PdfDocument();
+            document.Info.Title = "Bao cao thu vien";
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont headerFont = new XFont("Verdana", 14, XFontStyle.Bold);
+            XFont font = new XFont("Verdana", 10, XFontStyle.Regular);
+
+            double y = 40;
+            gfx.DrawString("BÁO CÁO THỐNG KÊ THƯ VIỆN", headerFont, XBrushes.Black,
+                new XRect(0, y, page.Width, 20), XStringFormats.TopCenter);
+            y += 30;
+            gfx.DrawString($"Loại báo cáo: {cboReportType.Text}", font, XBrushes.Black,
+                new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+            y += 20;
+            gfx.DrawString($"Từ ngày: {dtpFromDate.Value:dd/MM/yyyy} - Đến ngày: {dtpToDate.Value:dd/MM/yyyy}", font, XBrushes.Black,
+                new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+            y += 20;
+            gfx.DrawString($"Ngày xuất: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", font, XBrushes.Black,
+                new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+            y += 20;
+            gfx.DrawString($"Người xuất: {Utility.CurrentEmployee?.Name ?? "Hệ thống"}", font, XBrushes.Black,
+                new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+            y += 30;
+
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv?.DataSource != null)
+            {
+                string header = string.Join(" | ", dgv.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText));
+                gfx.DrawString(header, font, XBrushes.Black, new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+                y += 20;
+
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    string rowText = string.Join(" | ", row.Cells.Cast<DataGridViewCell>().Select(c => c.Value?.ToString() ?? ""));
+                    gfx.DrawString(rowText, font, XBrushes.Black, new XRect(40, y, page.Width - 80, 20), XStringFormats.TopLeft);
+                    y += 20;
+                    if (y > page.Height - 40)
+                    {
+                        page = document.AddPage();
+                        gfx = XGraphics.FromPdfPage(page);
+                        y = 40;
+                    }
+                }
+            }
+
+            document.Save(fileName);
         }
 
         private void ExportToRTF(string fileName)

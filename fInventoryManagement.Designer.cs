@@ -28,191 +28,137 @@
         /// </summary>
         private void InitializeComponent()
         {
-            pnlLostBookInfo = new Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fInventoryManagement));
+            pnlInventoryInfo = new Panel();
+            btnSelectBooks = new Button();
             lblNotes = new Label();
-            txtReason = new TextBox();
-            lblReason = new Label();
-            dateTimePicker1 = new DateTimePicker();
+            dtpCheckDate = new DateTimePicker();
             cboEmployee = new ComboBox();
-            txtBookTitle = new TextBox();
-            btnSelectCopy = new Button();
-            txtDescription = new TextBox();
-            lblReportDate = new Label();
+            txtNotes = new TextBox();
             lblEmployee = new Label();
-            lblBookTitle = new Label();
-            txtCopyId = new TextBox();
-            lblCopyId = new Label();
-            txtLostBookId = new TextBox();
+            lblCheckDate = new Label();
+            txtInventoryId = new TextBox();
             lblInventoryId = new Label();
             lblInventoryInfo = new Label();
-            pnlLostBookInfo.SuspendLayout();
+            pnlSearch = new Panel();
+            btnSearch = new Button();
+            txtSearch = new TextBox();
+            lblSearch = new Label();
+            pnlDataGrid = new Panel();
+            dgvInventory = new DataGridView();
+            pictureBox1 = new PictureBox();
+            btnRefresh = new Button();
+            btnDelete = new Button();
+            btnUpdate = new Button();
+            btnAdd = new Button();
+            lblInventoryList = new Label();
+            pnlInventoryInfo.SuspendLayout();
+            pnlSearch.SuspendLayout();
+            pnlDataGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
-            // pnlLostBookInfo
+            // pnlInventoryInfo
             // 
-            pnlLostBookInfo.BackColor = Color.White;
-            pnlLostBookInfo.Controls.Add(lblNotes);
-            pnlLostBookInfo.Controls.Add(txtReason);
-            pnlLostBookInfo.Controls.Add(lblReason);
-            pnlLostBookInfo.Controls.Add(dateTimePicker1);
-            pnlLostBookInfo.Controls.Add(cboEmployee);
-            pnlLostBookInfo.Controls.Add(txtBookTitle);
-            pnlLostBookInfo.Controls.Add(btnSelectCopy);
-            pnlLostBookInfo.Controls.Add(txtDescription);
-            pnlLostBookInfo.Controls.Add(lblReportDate);
-            pnlLostBookInfo.Controls.Add(lblEmployee);
-            pnlLostBookInfo.Controls.Add(lblBookTitle);
-            pnlLostBookInfo.Controls.Add(txtCopyId);
-            pnlLostBookInfo.Controls.Add(lblCopyId);
-            pnlLostBookInfo.Controls.Add(txtLostBookId);
-            pnlLostBookInfo.Controls.Add(lblInventoryId);
-            pnlLostBookInfo.Controls.Add(lblInventoryInfo);
-            pnlLostBookInfo.Location = new Point(20, 20);
-            pnlLostBookInfo.Name = "pnlLostBookInfo";
-            pnlLostBookInfo.Size = new Size(930, 200);
-            pnlLostBookInfo.TabIndex = 2;
+            pnlInventoryInfo.BackColor = Color.White;
+            pnlInventoryInfo.Controls.Add(btnSelectBooks);
+            pnlInventoryInfo.Controls.Add(lblNotes);
+            pnlInventoryInfo.Controls.Add(dtpCheckDate);
+            pnlInventoryInfo.Controls.Add(cboEmployee);
+            pnlInventoryInfo.Controls.Add(txtNotes);
+            pnlInventoryInfo.Controls.Add(lblEmployee);
+            pnlInventoryInfo.Controls.Add(lblCheckDate);
+            pnlInventoryInfo.Controls.Add(txtInventoryId);
+            pnlInventoryInfo.Controls.Add(lblInventoryId);
+            pnlInventoryInfo.Controls.Add(lblInventoryInfo);
+            pnlInventoryInfo.Location = new Point(20, 20);
+            pnlInventoryInfo.Name = "pnlInventoryInfo";
+            pnlInventoryInfo.Size = new Size(930, 200);
+            pnlInventoryInfo.TabIndex = 2;
+            // 
+            // btnSelectBooks
+            // 
+            btnSelectBooks.BackColor = Color.MediumAquamarine;
+            btnSelectBooks.FlatAppearance.BorderSize = 0;
+            btnSelectBooks.FlatStyle = FlatStyle.Flat;
+            btnSelectBooks.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSelectBooks.ForeColor = Color.White;
+            btnSelectBooks.Location = new Point(155, 160);
+            btnSelectBooks.Name = "btnSelectBooks";
+            btnSelectBooks.Size = new Size(150, 30);
+            btnSelectBooks.TabIndex = 18;
+            btnSelectBooks.Text = "Chọn sách kiểm kê";
+            btnSelectBooks.UseVisualStyleBackColor = false;
+            btnSelectBooks.Click += btnSelectBooks_Click;
             // 
             // lblNotes
             // 
             lblNotes.AutoSize = true;
             lblNotes.BackColor = Color.White;
             lblNotes.ForeColor = Color.FromArgb(94, 76, 76);
-            lblNotes.Location = new Point(450, 125);
+            lblNotes.Location = new Point(450, 55);
             lblNotes.Name = "lblNotes";
             lblNotes.Size = new Size(61, 20);
             lblNotes.TabIndex = 17;
             lblNotes.Text = "Ghi chú:";
             // 
-            // txtReason
+            // dtpCheckDate
             // 
-            txtReason.Location = new Point(550, 52);
-            txtReason.MaxLength = 200;
-            txtReason.Multiline = true;
-            txtReason.Name = "txtReason";
-            txtReason.Size = new Size(350, 50);
-            txtReason.TabIndex = 4;
-            // 
-            // lblReason
-            // 
-            lblReason.AutoSize = true;
-            lblReason.BackColor = Color.White;
-            lblReason.ForeColor = Color.FromArgb(94, 76, 76);
-            lblReason.Location = new Point(450, 55);
-            lblReason.Name = "lblReason";
-            lblReason.Size = new Size(47, 20);
-            lblReason.TabIndex = 15;
-            lblReason.Text = "Lý do:";
-            // 
-            // dateTimePicker1
-            // 
-            dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.Location = new Point(155, 192);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(126, 27);
-            dateTimePicker1.TabIndex = 3;
+            dtpCheckDate.Format = DateTimePickerFormat.Short;
+            dtpCheckDate.Location = new Point(155, 87);
+            dtpCheckDate.Name = "dtpCheckDate";
+            dtpCheckDate.Size = new Size(200, 27);
+            dtpCheckDate.TabIndex = 3;
             // 
             // cboEmployee
             // 
             cboEmployee.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployee.FormattingEnabled = true;
-            cboEmployee.Location = new Point(155, 157);
+            cboEmployee.Location = new Point(155, 122);
             cboEmployee.Name = "cboEmployee";
             cboEmployee.Size = new Size(250, 28);
             cboEmployee.TabIndex = 2;
             // 
-            // txtBookTitle
+            // txtNotes
             // 
-            txtBookTitle.Location = new Point(155, 122);
-            txtBookTitle.Name = "txtBookTitle";
-            txtBookTitle.ReadOnly = true;
-            txtBookTitle.Size = new Size(250, 27);
-            txtBookTitle.TabIndex = 12;
-            // 
-            // btnSelectCopy
-            // 
-            btnSelectCopy.BackColor = Color.MediumAquamarine;
-            btnSelectCopy.FlatAppearance.BorderSize = 0;
-            btnSelectCopy.FlatStyle = FlatStyle.Flat;
-            btnSelectCopy.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSelectCopy.ForeColor = Color.White;
-            btnSelectCopy.Location = new Point(315, 87);
-            btnSelectCopy.Name = "btnSelectCopy";
-            btnSelectCopy.Size = new Size(80, 27);
-            btnSelectCopy.TabIndex = 1;
-            btnSelectCopy.Text = "Chọn";
-            btnSelectCopy.UseVisualStyleBackColor = false;
-            // 
-            // txtDescription
-            // 
-            txtDescription.Location = new Point(550, 122);
-            txtDescription.MaxLength = 500;
-            txtDescription.Multiline = true;
-            txtDescription.Name = "txtDescription";
-            txtDescription.ScrollBars = ScrollBars.Vertical;
-            txtDescription.Size = new Size(350, 130);
-            txtDescription.TabIndex = 5;
-            // 
-            // lblReportDate
-            // 
-            lblReportDate.AutoSize = true;
-            lblReportDate.BackColor = Color.White;
-            lblReportDate.ForeColor = Color.FromArgb(94, 76, 76);
-            lblReportDate.Location = new Point(15, 195);
-            lblReportDate.Name = "lblReportDate";
-            lblReportDate.Size = new Size(105, 20);
-            lblReportDate.TabIndex = 9;
-            lblReportDate.Text = "Ngày báo cáo:";
+            txtNotes.Location = new Point(550, 52);
+            txtNotes.MaxLength = 500;
+            txtNotes.Multiline = true;
+            txtNotes.Name = "txtNotes";
+            txtNotes.ScrollBars = ScrollBars.Vertical;
+            txtNotes.Size = new Size(350, 130);
+            txtNotes.TabIndex = 5;
             // 
             // lblEmployee
             // 
             lblEmployee.AutoSize = true;
             lblEmployee.BackColor = Color.White;
             lblEmployee.ForeColor = Color.FromArgb(94, 76, 76);
-            lblEmployee.Location = new Point(15, 160);
+            lblEmployee.Location = new Point(15, 125);
             lblEmployee.Name = "lblEmployee";
-            lblEmployee.Size = new Size(112, 20);
+            lblEmployee.Size = new Size(78, 20);
             lblEmployee.TabIndex = 7;
-            lblEmployee.Text = "Người báo cáo:";
+            lblEmployee.Text = "Nhân viên:";
             // 
-            // lblBookTitle
+            // lblCheckDate
             // 
-            lblBookTitle.AutoSize = true;
-            lblBookTitle.BackColor = Color.White;
-            lblBookTitle.ForeColor = Color.FromArgb(94, 76, 76);
-            lblBookTitle.Location = new Point(15, 125);
-            lblBookTitle.Name = "lblBookTitle";
-            lblBookTitle.Size = new Size(68, 20);
-            lblBookTitle.TabIndex = 5;
-            lblBookTitle.Text = "Tên sách:";
+            lblCheckDate.AutoSize = true;
+            lblCheckDate.BackColor = Color.White;
+            lblCheckDate.ForeColor = Color.FromArgb(94, 76, 76);
+            lblCheckDate.Location = new Point(15, 90);
+            lblCheckDate.Name = "lblCheckDate";
+            lblCheckDate.Size = new Size(102, 20);
+            lblCheckDate.TabIndex = 3;
+            lblCheckDate.Text = "Ngày kiểm kê:";
             // 
-            // txtCopyId
+            // txtInventoryId
             // 
-            txtCopyId.CharacterCasing = CharacterCasing.Upper;
-            txtCopyId.Location = new Point(155, 87);
-            txtCopyId.MaxLength = 10;
-            txtCopyId.Name = "txtCopyId";
-            txtCopyId.ReadOnly = true;
-            txtCopyId.Size = new Size(150, 27);
-            txtCopyId.TabIndex = 0;
-            // 
-            // lblCopyId
-            // 
-            lblCopyId.AutoSize = true;
-            lblCopyId.BackColor = Color.White;
-            lblCopyId.ForeColor = Color.FromArgb(94, 76, 76);
-            lblCopyId.Location = new Point(15, 90);
-            lblCopyId.Name = "lblCopyId";
-            lblCopyId.Size = new Size(89, 20);
-            lblCopyId.TabIndex = 3;
-            lblCopyId.Text = "Mã bản sao:";
-            // 
-            // txtLostBookId
-            // 
-            txtLostBookId.Enabled = false;
-            txtLostBookId.Location = new Point(155, 52);
-            txtLostBookId.Name = "txtLostBookId";
-            txtLostBookId.Size = new Size(200, 27);
-            txtLostBookId.TabIndex = 2;
+            txtInventoryId.Enabled = false;
+            txtInventoryId.Location = new Point(155, 52);
+            txtInventoryId.Name = "txtInventoryId";
+            txtInventoryId.Size = new Size(200, 27);
+            txtInventoryId.TabIndex = 2;
             // 
             // lblInventoryId
             // 
@@ -236,39 +182,213 @@
             lblInventoryInfo.TabIndex = 0;
             lblInventoryInfo.Text = "THÔNG TIN KIỂM KÊ";
             // 
+            // pnlSearch
+            // 
+            pnlSearch.BackColor = Color.White;
+            pnlSearch.Controls.Add(btnSearch);
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Controls.Add(lblSearch);
+            pnlSearch.Location = new Point(20, 230);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Size = new Size(930, 60);
+            pnlSearch.TabIndex = 19;
+            // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = Color.FromArgb(129, 195, 215);
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSearch.ForeColor = Color.White;
+            btnSearch.Location = new Point(560, 13);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(100, 35);
+            btnSearch.TabIndex = 1;
+            btnSearch.Text = "Tìm kiếm";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
+            // txtSearch
+            // 
+            txtSearch.Location = new Point(100, 17);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Nhập mã kiểm kê, tên nhân viên...";
+            txtSearch.Size = new Size(450, 27);
+            txtSearch.TabIndex = 0;
+            // 
+            // lblSearch
+            // 
+            lblSearch.AutoSize = true;
+            lblSearch.BackColor = Color.White;
+            lblSearch.ForeColor = Color.FromArgb(94, 76, 76);
+            lblSearch.Location = new Point(15, 20);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new Size(73, 20);
+            lblSearch.TabIndex = 0;
+            lblSearch.Text = "Tìm kiếm:";
+            // 
+            // pnlDataGrid
+            // 
+            pnlDataGrid.BackColor = Color.White;
+            pnlDataGrid.Controls.Add(dgvInventory);
+            pnlDataGrid.Controls.Add(pictureBox1);
+            pnlDataGrid.Controls.Add(btnRefresh);
+            pnlDataGrid.Controls.Add(btnDelete);
+            pnlDataGrid.Controls.Add(btnUpdate);
+            pnlDataGrid.Controls.Add(btnAdd);
+            pnlDataGrid.Controls.Add(lblInventoryList);
+            pnlDataGrid.Location = new Point(20, 300);
+            pnlDataGrid.Name = "pnlDataGrid";
+            pnlDataGrid.Size = new Size(930, 330);
+            pnlDataGrid.TabIndex = 20;
+            // 
+            // dgvInventory
+            // 
+            dgvInventory.AllowUserToAddRows = false;
+            dgvInventory.AllowUserToDeleteRows = false;
+            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvInventory.BackgroundColor = Color.White;
+            dgvInventory.BorderStyle = BorderStyle.None;
+            dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvInventory.Location = new Point(15, 50);
+            dgvInventory.Name = "dgvInventory";
+            dgvInventory.ReadOnly = true;
+            dgvInventory.RowHeadersWidth = 51;
+            dgvInventory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvInventory.Size = new Size(900, 260);
+            dgvInventory.TabIndex = 7;
+            dgvInventory.DataBindingComplete += dgvInventory_DataBindingComplete;
+            dgvInventory.SelectionChanged += dgvInventory_SelectionChanged;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(236, 16);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(33, 28);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 6;
+            pictureBox1.TabStop = false;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.BackColor = Color.FromArgb(129, 195, 215);
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRefresh.ForeColor = Color.White;
+            btnRefresh.Location = new Point(815, 15);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(96, 29);
+            btnRefresh.TabIndex = 3;
+            btnRefresh.Text = "Làm mới";
+            btnRefresh.UseVisualStyleBackColor = false;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.BackColor = Color.FromArgb(192, 0, 0);
+            btnDelete.FlatAppearance.BorderSize = 0;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDelete.ForeColor = Color.White;
+            btnDelete.Location = new Point(710, 15);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(96, 29);
+            btnDelete.TabIndex = 2;
+            btnDelete.Text = "Xóa";
+            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnUpdate
+            // 
+            btnUpdate.BackColor = Color.FromArgb(210, 121, 106);
+            btnUpdate.FlatAppearance.BorderSize = 0;
+            btnUpdate.FlatStyle = FlatStyle.Flat;
+            btnUpdate.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnUpdate.ForeColor = Color.White;
+            btnUpdate.Location = new Point(605, 15);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(96, 29);
+            btnUpdate.TabIndex = 1;
+            btnUpdate.Text = "Cập nhật";
+            btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
+            // 
+            // btnAdd
+            // 
+            btnAdd.BackColor = Color.FromArgb(210, 121, 106);
+            btnAdd.FlatAppearance.BorderSize = 0;
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdd.ForeColor = Color.White;
+            btnAdd.Location = new Point(500, 15);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(96, 29);
+            btnAdd.TabIndex = 0;
+            btnAdd.Text = "Tạo mới";
+            btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
+            // 
+            // lblInventoryList
+            // 
+            lblInventoryList.AutoSize = true;
+            lblInventoryList.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblInventoryList.ForeColor = Color.FromArgb(210, 121, 106);
+            lblInventoryList.Location = new Point(15, 15);
+            lblInventoryList.Name = "lblInventoryList";
+            lblInventoryList.Size = new Size(215, 28);
+            lblInventoryList.TabIndex = 0;
+            lblInventoryList.Text = "DANH SÁCH KIỂM KÊ";
+            // 
             // fInventoryManagement
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(249, 241, 240);
             ClientSize = new Size(970, 650);
-            Controls.Add(pnlLostBookInfo);
+            Controls.Add(pnlDataGrid);
+            Controls.Add(pnlSearch);
+            Controls.Add(pnlInventoryInfo);
             FormBorderStyle = FormBorderStyle.None;
             Name = "fInventoryManagement";
             Text = "Form1";
-            pnlLostBookInfo.ResumeLayout(false);
-            pnlLostBookInfo.PerformLayout();
+            Load += fInventoryManagement_Load;
+            pnlInventoryInfo.ResumeLayout(false);
+            pnlInventoryInfo.PerformLayout();
+            pnlSearch.ResumeLayout(false);
+            pnlSearch.PerformLayout();
+            pnlDataGrid.ResumeLayout(false);
+            pnlDataGrid.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvInventory).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel pnlLostBookInfo;
+        private Panel pnlInventoryInfo;
         private Label lblNotes;
-        private TextBox txtReason;
-        private Label lblReason;
-        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dtpCheckDate;
         private ComboBox cboEmployee;
-        private TextBox txtBookTitle;
-        private Button btnSelectCopy;
-        private TextBox txtDescription;
-        private Label lblReportDate;
+        private TextBox txtNotes;
         private Label lblEmployee;
-        private Label lblBookTitle;
-        private TextBox txtCopyId;
-        private Label lblCopyId;
-        private TextBox txtLostBookId;
+        private Label lblCheckDate;
+        private TextBox txtInventoryId;
         private Label lblInventoryId;
         private Label lblInventoryInfo;
+        private Button btnSelectBooks;
+        private Panel pnlSearch;
+        private Button btnSearch;
+        private TextBox txtSearch;
+        private Label lblSearch;
+        private Panel pnlDataGrid;
+        private DataGridView dgvInventory;
+        private PictureBox pictureBox1;
+        private Button btnRefresh;
+        private Button btnDelete;
+        private Button btnUpdate;
+        private Button btnAdd;
+        private Label lblInventoryList;
     }
 }

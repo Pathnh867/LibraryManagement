@@ -74,6 +74,9 @@ namespace LibraryManagement
                     case "btnEmployees":
                         OpenEmployeeManagement();
                         break;
+                    case "btnInventory":
+                        OpenInventoryManagement();
+                        break;
                     case "btnLogout":
                         Logout();
                         break;
@@ -229,6 +232,18 @@ namespace LibraryManagement
             pnlContent.Controls.Add(locationForm);
             locationForm.Show();
         }
+
+        private void OpenInventoryManagement()
+        {
+            pnlContent.Controls.Clear();
+            fInventoryManagement inventoryForm = new fInventoryManagement();
+            inventoryForm.TopLevel = false;
+            inventoryForm.FormBorderStyle = FormBorderStyle.None;
+            inventoryForm.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(inventoryForm);
+            inventoryForm.Show();
+        }
+
         // Phương thức mở form cài đặt
         private void OpenSettings()
         {
@@ -345,15 +360,20 @@ namespace LibraryManagement
 
         private void fMainForm_Load(object sender, EventArgs e)
         {
+            // Nhóm chính
             Button btnDashboard = CreateMenuButton("btnDashboard", "🏠  Trang chính", 170);
             Button btnBooks = CreateMenuButton("btnBooks", "📚  Quản lý sách", 225);
             Button btnMembers = CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 280);
             Button btnBorrow = CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 335);
-            Button btnLocations = CreateMenuButton("btnLocations", "📍  Quản lý vị trí", 500);
-            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 390);
-            Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 445);
-            Button btnSettings = CreateMenuButton("btnSettings", "⚙️  Cài đặt hệ thống", 500);
-            Button btnLogout = CreateMenuButton("btnLogout", "🚪  Đăng xuất", 580);
+            Button btnInventory = CreateMenuButton("btnInventory", "📦  Quản lý kho sách", 390);
+            Button btnLocations = CreateMenuButton("btnLocations", "📍  Quản lý vị trí", 445);
+
+            // Nhóm quản trị & báo cáo
+            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 500);
+            Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 555);
+
+            Button btnLogout = CreateMenuButton("btnLogout", "🚪  Đăng xuất", 610);
+
 
             // Thêm các nút vào sidebar
             pnlSidebar.Controls.Add(btnDashboard);
@@ -363,7 +383,7 @@ namespace LibraryManagement
             pnlSidebar.Controls.Add(btnLocations);
             pnlSidebar.Controls.Add(btnEmployees);
             pnlSidebar.Controls.Add(btnStatistics);
-            pnlSidebar.Controls.Add(btnSettings);
+            pnlSidebar.Controls.Add(btnInventory);
             pnlSidebar.Controls.Add(btnLogout);
 
             // Kích hoạt nút Dashboard mặc định
@@ -378,7 +398,6 @@ namespace LibraryManagement
             if (Utility.HasPermission(1)) // Chỉ quản trị viên
             {
                 pnlSidebar.Controls.Add(btnEmployees);
-                pnlSidebar.Controls.Add(btnSettings);
             }
             // Thiết lập thông tin người dùng
             if (Utility.CurrentEmployee != null)

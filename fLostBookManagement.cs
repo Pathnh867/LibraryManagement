@@ -48,6 +48,13 @@ namespace LibraryManagement
         private void fLostBookManagement_Load(object sender, EventArgs e)
         {
             dgvLostBooks.CellClick += dgvLostBooks_CellClick;
+            // Load danh sách nhân viên cho combobox
+            var employees = context.Employees
+                .Where(e => e.Status) // chỉ lấy nhân viên đang hoạt động
+                .ToList();
+            cboEmployee.DataSource = employees;
+            cboEmployee.DisplayMember = "Name";
+            cboEmployee.ValueMember = "EmployeeId";
         }
 
         private void dgvLostBooks_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -118,7 +125,7 @@ namespace LibraryManagement
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(txtLostBookId.Text))
+            if (string.IsNullOrEmpty(txtLostBookId.Text))
             {
                 MessageBox.Show("Vui lòng chọn báo mất sách cần cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -150,10 +157,57 @@ namespace LibraryManagement
                 LoadLostBookData();
                 ClearForm();
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi cập nhật báo mất sách: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnSelectCopy_Click(object sender, EventArgs e)
+        {
+            // Ví dụ đơn giản: chọn bản sao từ danh sách những sách chưa mất
+            var availableCopies = context.BookCopies
+                .Include(bc => bc.Book)
+                .Where(bc => bc.Status != 3) // 3 = Đã mất
+                .ToList();
+
+            var form = new Form(); // Popup chọn sách
+                                   // Add logic hiển thị danh sách và chọn một dòng để điền vào txtCopyId, txtBookTitle
+                                   // (Có thể dùng DataGridView hoặc ListBox)
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtLostBookId.Text))
+            {
+                MessageBox.Show("Vui lòng chọn báo mất sách cần xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int id = int.Parse(txtLostBookId.Text.Trim());
+            var report = context.LostBooks.Find(id);
+            if (report != null)
+            {
+                var result = MessageBox.Show("Bạn có chắc muốn xóa báo mất này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    context.LostBooks.Remove(report);
+                    context.SaveChanges();
+                    MessageBox.Show("Đã xóa báo mất sách thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadLostBookData();
+                    ClearForm();
+                }
+            }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+            LoadLostBookData();
+
+            // Bỏ chọn dòng nào đang được chọn
+            dgvLostBooks.ClearSelection();
         }
     }
 }

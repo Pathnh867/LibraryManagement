@@ -22,8 +22,10 @@ namespace LibraryManagement
         public fLocationManagement()
         {
             InitializeComponent();
+            dgvLocations.AutoGenerateColumns = true; // BẮT BUỘC phải có dòng này
             context = new LibraryDbContext();
             ApplyFormStyle();
+            dgvLocations.DataBindingComplete += DgvLocations_DataBindingComplete;
             LoadLocationData();
             SetControlState(false);
         }
@@ -154,26 +156,14 @@ namespace LibraryManagement
                         LocationCode = $"{l.AreaCode}-{l.ShelfNumber:D2}-{l.SectionNumber:D2}",
                         l.Description,
                         BookCount = l.BookCopies.Count,
-                        AvailableCount = l.BookCopies.Count(bc => bc.Status == 1), // Status 1 = Available
+                        AvailableCount = l.BookCopies.Count(bc => bc.Status == 1),
                         OccupiedCount = l.BookCopies.Count(bc => bc.Status != 1)
                     })
                     .ToList();
 
-                // Set DataSource first
                 locationBindingSource.DataSource = locations;
                 dgvLocations.DataSource = locationBindingSource;
-
-                // Debug: Print available columns
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("Available columns:");
-                foreach (DataGridViewColumn col in dgvLocations.Columns)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Column: {col.Name}");
-                }
-#endif
-
-                // Then format after DataSource is set
-                FormatDataGridView();
+                
             }
             catch (Exception ex)
             {
@@ -183,89 +173,63 @@ namespace LibraryManagement
 
         private void FormatDataGridView()
         {
-            // Check if DataSource is set and columns exist
             if (dgvLocations.DataSource == null || dgvLocations.Columns.Count == 0)
                 return;
 
-            // Set column headers with null checks
+            // Thiết lập tiêu đề, chiều rộng, kiểm tra null cho từng cột
             if (dgvLocations.Columns["LocationId"] != null)
+            {
                 dgvLocations.Columns["LocationId"].HeaderText = "Mã vị trí";
-
+                dgvLocations.Columns["LocationId"].Width = 50;
+            }
             if (dgvLocations.Columns["AreaCode"] != null)
+            {
                 dgvLocations.Columns["AreaCode"].HeaderText = "Khu vực";
-
+                dgvLocations.Columns["AreaCode"].Width = 80;
+            }
             if (dgvLocations.Columns["ShelfNumber"] != null)
+            {
                 dgvLocations.Columns["ShelfNumber"].HeaderText = "Số kệ";
-
+                dgvLocations.Columns["ShelfNumber"].Width = 70;
+            }
             if (dgvLocations.Columns["SectionNumber"] != null)
+            {
                 dgvLocations.Columns["SectionNumber"].HeaderText = "Số ngăn";
-
+                dgvLocations.Columns["SectionNumber"].Width = 80;
+            }
             if (dgvLocations.Columns["LocationCode"] != null)
+            {
                 dgvLocations.Columns["LocationCode"].HeaderText = "Mã định vị";
-
+                dgvLocations.Columns["LocationCode"].Width = 120;
+            }
             if (dgvLocations.Columns["Description"] != null)
                 dgvLocations.Columns["Description"].HeaderText = "Mô tả";
-
             if (dgvLocations.Columns["BookCount"] != null)
                 dgvLocations.Columns["BookCount"].HeaderText = "Tổng sách";
-
             if (dgvLocations.Columns["AvailableCount"] != null)
                 dgvLocations.Columns["AvailableCount"].HeaderText = "Có sẵn";
-
             if (dgvLocations.Columns["OccupiedCount"] != null)
                 dgvLocations.Columns["OccupiedCount"].HeaderText = "Đang sử dụng";
 
-            // Set column widths with null checks
-            if (dgvLocations.Columns["LocationId"] != null)
-                dgvLocations.Columns["LocationId"].Width = 40;
-
-            if (dgvLocations.Columns["AreaCode"] != null)
-                dgvLocations.Columns["AreaCode"].Width = 80;
-
-            if (dgvLocations.Columns["ShelfNumber"] != null)
-                dgvLocations.Columns["ShelfNumber"].Width = 70;
-
-            if (dgvLocations.Columns["SectionNumber"] != null)
-                dgvLocations.Columns["SectionNumber"].Width = 80;
-
-            if (dgvLocations.Columns["LocationCode"] != null)
-                dgvLocations.Columns["LocationCode"].Width = 120;
-
-            if (dgvLocations.Columns["BookCount"] != null)
-                dgvLocations.Columns["BookCount"].Width = 90;
-
-            if (dgvLocations.Columns["AvailableCount"] != null)
-                dgvLocations.Columns["AvailableCount"].Width = 90;
-
-            if (dgvLocations.Columns["OccupiedCount"] != null)
-                dgvLocations.Columns["OccupiedCount"].Width = 110;
-
-            // Set text color to black or dark gray
+            // Style cho DataGridView
             dgvLocations.ForeColor = Color.FromArgb(64, 64, 64);
             dgvLocations.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
-
-            // Header style
             dgvLocations.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dgvLocations.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(210, 121, 106);
             dgvLocations.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvLocations.EnableHeadersVisualStyles = false;
-
-            // Alternate row colors
             dgvLocations.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 245, 245);
             dgvLocations.DefaultCellStyle.BackColor = Color.White;
-
-            // Selection style
             dgvLocations.DefaultCellStyle.SelectionBackColor = Color.FromArgb(210, 121, 106);
             dgvLocations.DefaultCellStyle.SelectionForeColor = Color.White;
-
-            // Set row height
             dgvLocations.RowTemplate.Height = 28;
-
-            // Grid lines
             dgvLocations.GridColor = Color.FromArgb(224, 224, 224);
             dgvLocations.BorderStyle = BorderStyle.None;
             dgvLocations.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
         }
+        #endregion
+
+        #region 
 
         private void ClearFields()
         {
@@ -325,7 +289,6 @@ namespace LibraryManagement
                 return false;
             }
 
-            // Check for duplicate location
             string areaCode = txtAreaCode.Text.Trim().ToUpper();
             int shelfNumber = (int)numShelfNumber.Value;
             int sectionNumber = (int)numSectionNumber.Value;
@@ -352,19 +315,20 @@ namespace LibraryManagement
         }
         #endregion
 
-        #region Event Handlers
+        #region Event Handlers (giữ nguyên như code của bạn)
         private void fLocationManagement_Load(object sender, EventArgs e)
         {
             LoadLocationData();
             SetControlState(false);
 
-            // Add Enter key event for search
             txtSearch.KeyDown += txtSearch_KeyDown;
-
-            // Add double-click event for viewing books at location
             dgvLocations.CellDoubleClick += dgvLocations_CellDoubleClick;
+            dgvLocations.DataBindingComplete += DgvLocations_DataBindingComplete;
         }
-
+        private void DgvLocations_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            FormatDataGridView();
+        }
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (btnAdd.Text == "Tạo mới")
@@ -415,7 +379,6 @@ namespace LibraryManagement
                     MessageBox.Show("Cập nhật vị trí thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                // Reset UI
                 isAddNew = false;
                 LoadLocationData();
                 ClearFields();
@@ -448,7 +411,6 @@ namespace LibraryManagement
                 return;
             }
 
-            // Check if location has any book copies
             int bookCount = context.BookCopies.Count(bc => bc.LocationId == currentLocation.LocationId);
             if (bookCount > 0)
             {
@@ -493,7 +455,7 @@ namespace LibraryManagement
                 SetControlState(false);
                 txtSearch.Clear();
             }
-            else // Cancel
+            else
             {
                 isAddNew = false;
                 ClearFields();

@@ -270,6 +270,7 @@
             dgvLocations.Size = new Size(900, 250);
             dgvLocations.TabIndex = 7;
             dgvLocations.CellDoubleClick += dgvLocations_CellDoubleClick;
+            dgvLocations.DataBindingComplete += DgvLocations_DataBindingComplete;
             dgvLocations.SelectionChanged += dgvLocations_SelectionChanged;
             // 
             // pictureBox1

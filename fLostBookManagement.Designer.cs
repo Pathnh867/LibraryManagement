@@ -158,6 +158,7 @@
             btnSelectCopy.TabIndex = 1;
             btnSelectCopy.Text = "Chọn";
             btnSelectCopy.UseVisualStyleBackColor = false;
+            btnSelectCopy.Click += btnSelectCopy_Click;
             // 
             // txtDescription
             // 
@@ -332,7 +333,7 @@
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(213, 15);
+            pictureBox1.Location = new Point(278, 15);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(33, 28);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -352,6 +353,7 @@
             btnRefresh.TabIndex = 3;
             btnRefresh.Text = "Làm mới";
             btnRefresh.UseVisualStyleBackColor = false;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // btnDelete
             // 
@@ -366,6 +368,7 @@
             btnDelete.TabIndex = 2;
             btnDelete.Text = "Xóa";
             btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnUpdate
             // 
@@ -404,9 +407,9 @@
             lblLostBookList.ForeColor = Color.FromArgb(210, 121, 106);
             lblLostBookList.Location = new Point(15, 15);
             lblLostBookList.Name = "lblLostBookList";
-            lblLostBookList.Size = new Size(192, 28);
+            lblLostBookList.Size = new Size(264, 28);
             lblLostBookList.TabIndex = 0;
-            lblLostBookList.Text = "DANH SÁCH VỊ TRÍ";
+            lblLostBookList.Text = "DANH SÁCH SÁCH BỊ MẤT";
             // 
             // fLostBookManagement
             // 

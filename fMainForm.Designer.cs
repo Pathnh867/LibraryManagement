@@ -102,7 +102,7 @@
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.Location = new Point(0, 50);
             pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Size = new Size(230, 650);
+            pnlSidebar.Size = new Size(230, 670);
             pnlSidebar.TabIndex = 1;
             // 
             // pnlUserInfo
@@ -152,7 +152,7 @@
             pnlContent.Dock = DockStyle.Fill;
             pnlContent.Location = new Point(230, 50);
             pnlContent.Name = "pnlContent";
-            pnlContent.Size = new Size(970, 650);
+            pnlContent.Size = new Size(970, 670);
             pnlContent.TabIndex = 2;
             // 
             // fMainForm
@@ -160,7 +160,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(249, 241, 240);
-            ClientSize = new Size(1200, 700);
+            ClientSize = new Size(1200, 720);
             Controls.Add(pnlContent);
             Controls.Add(pnlSidebar);
             Controls.Add(pnlHeader);

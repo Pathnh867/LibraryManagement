@@ -759,13 +759,13 @@ namespace LibraryManagement
             try
             {
                 SaveFileDialog saveDialog = new SaveFileDialog();
-                saveDialog.Filter = "RTF files (*.rtf)|*.rtf";
-                saveDialog.FileName = $"BaoCaoThuVien_{DateTime.Now:yyyyMMdd_HHmmss}.rtf";
+                saveDialog.Filter = "PDF files (*.pdf)|*.pdf";
+                saveDialog.FileName = $"BaoCaoThuVien_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
                     ExportToRTF(saveDialog.FileName);
-                    MessageBox.Show($"Xuất RTF thành công!\nFile đã được lưu tại: {saveDialog.FileName}",
+                    MessageBox.Show($"Xuất PDF thành công!\nFile đã được lưu tại: {saveDialog.FileName}",
                         "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }

@@ -120,11 +120,12 @@ namespace LibraryManagement
                 .OnDelete(DeleteBehavior.Restrict);
 
             // LostBook - BookCopy (một-một)
-            modelBuilder.Entity<LostBook>()
-                .HasOne(lb => lb.BookCopy)
-                .WithOne(bc => bc.LostBook)
-                .HasForeignKey<LostBook>(lb => lb.CopyId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<BookCopy>()
+                 .HasOne(bc => bc.LostBook)
+                 .WithOne(lb => lb.BookCopy)
+                 .HasForeignKey<LostBook>(lb => lb.CopyId)
+                 .OnDelete(DeleteBehavior.Restrict)
+                 .IsRequired(false);
 
             // LostBook - Employee
             modelBuilder.Entity<LostBook>()

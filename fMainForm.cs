@@ -77,6 +77,9 @@ namespace LibraryManagement
                     case "btnInventory":
                         OpenInventoryManagement();
                         break;
+                    case "btnLostBooks":
+                        OpenLostBookManagement();
+                        break;
                     case "btnLogout":
                         Logout();
                         break;
@@ -244,6 +247,18 @@ namespace LibraryManagement
             inventoryForm.Show();
         }
 
+        private void OpenLostBookManagement()
+        {
+            pnlContent.Controls.Clear();
+            fLostBookManagement lostBookForm = new fLostBookManagement();
+            lostBookForm.TopLevel = false;
+            lostBookForm.FormBorderStyle = FormBorderStyle.None;
+            lostBookForm.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(lostBookForm);
+            lostBookForm.Show();
+        }
+
+
         // Phương thức mở form cài đặt
         private void OpenSettings()
         {
@@ -360,52 +375,50 @@ namespace LibraryManagement
 
         private void fMainForm_Load(object sender, EventArgs e)
         {
-            // Nhóm chính
-            Button btnDashboard = CreateMenuButton("btnDashboard", "🏠  Trang chính", 170);
-            Button btnBooks = CreateMenuButton("btnBooks", "📚  Quản lý sách", 225);
-            Button btnMembers = CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 280);
-            Button btnBorrow = CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 335);
-            Button btnInventory = CreateMenuButton("btnInventory", "📦  Quản lý kho sách", 390);
-            Button btnLocations = CreateMenuButton("btnLocations", "📍  Quản lý vị trí", 445);
+            int startPos = 160;
+            int step = 50;
 
-            // Nhóm quản trị & báo cáo
-            Button btnEmployees = CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 500);
-            Button btnStatistics = CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 555);
-
-            Button btnLogout = CreateMenuButton("btnLogout", "🚪  Đăng xuất", 610);
-
-
-            // Thêm các nút vào sidebar
-            pnlSidebar.Controls.Add(btnDashboard);
-            pnlSidebar.Controls.Add(btnBooks);
-            pnlSidebar.Controls.Add(btnMembers);
-            pnlSidebar.Controls.Add(btnBorrow);
-            pnlSidebar.Controls.Add(btnLocations);
-            pnlSidebar.Controls.Add(btnEmployees);
-            pnlSidebar.Controls.Add(btnStatistics);
-            pnlSidebar.Controls.Add(btnInventory);
-            pnlSidebar.Controls.Add(btnLogout);
-
-            // Kích hoạt nút Dashboard mặc định
-            ActivateButton(btnDashboard);
-
-            // Kiểm tra quyền hạn trước khi thêm nút
-            if (Utility.HasPermission(2)) // Thủ thư trở lên
+            List<Button> menuButtons = new List<Button>
             {
-                pnlSidebar.Controls.Add(btnStatistics);
+                CreateMenuButton("btnDashboard", "🏠  Trang chính", 0),
+                CreateMenuButton("btnBooks", "📚  Quản lý sách", 0),
+                CreateMenuButton("btnMembers", "👥  Quản lý thành viên", 0),
+                CreateMenuButton("btnBorrow", "📝  Mượn / Trả sách", 0),
+                CreateMenuButton("btnInventory", "📦  Quản lý kho sách", 0),
+                CreateMenuButton("btnLostBooks", "📕  Sách mất", 0),
+                CreateMenuButton("btnLocations", "📍  Quản lý vị trí", 0)
+            };
+
+            if (Utility.HasPermission(1))
+            {
+                menuButtons.Add(CreateMenuButton("btnEmployees", "👤  Quản lý nhân viên", 0));
             }
 
-            if (Utility.HasPermission(1)) // Chỉ quản trị viên
+            if (Utility.HasPermission(2))
             {
-                pnlSidebar.Controls.Add(btnEmployees);
+                menuButtons.Add(CreateMenuButton("btnStatistics", "📊  Thống kê báo cáo", 0));
             }
-            // Thiết lập thông tin người dùng
+
+            menuButtons.Add(CreateMenuButton("btnLogout", "🚪  Đăng xuất", 0));
+
+            for (int i = 0; i < menuButtons.Count; i++)
+            {
+                Button btn = menuButtons[i];
+                btn.Location = new Point(5, startPos + step * i);
+                pnlSidebar.Controls.Add(btn);
+            }
+
+            ActivateButton(menuButtons[0]);
+
             if (Utility.CurrentEmployee != null)
             {
                 lblUserName.Text = Utility.CurrentEmployee.Name;
                 lblUserRole.Text = Utility.GetRoleText(Utility.CurrentEmployee.RoleId);
             }
-            AddNotificationBadge(btnBorrow, 5);
+
+            Button borrowButton = menuButtons.FirstOrDefault(b => b.Name == "btnBorrow");
+            if (borrowButton != null)
+                AddNotificationBadge(borrowButton, 5);
         }
 
         private void pnlUserInfo_Paint(object sender, PaintEventArgs e)

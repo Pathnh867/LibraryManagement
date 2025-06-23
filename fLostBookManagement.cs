@@ -42,7 +42,11 @@ namespace LibraryManagement
                 .ToList();
             lostBookBindingSource.DataSource = lostBooks;
             dgvLostBooks.DataSource = lostBookBindingSource;
-            dgvLostBooks.Columns["ReportDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
+            if (dgvLostBooks.Columns["ReportDate"] != null)
+                dgvLostBooks.Columns["ReportDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
+
+            FormatDataGridView();
+            
         }
 
         private void fLostBookManagement_Load(object sender, EventArgs e)
@@ -92,13 +96,23 @@ namespace LibraryManagement
             }
             try
             {
+                int copyId = int.Parse(txtCopyId.Text.Trim());
+
+                // Kiểm tra bản sao đã được báo mất chưa
+                if (context.LostBooks.Any(lb => lb.CopyId == copyId))
+                {
+                    MessageBox.Show("Bản sao này đã được báo mất trước đó.", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 var newLostBook = new LostBook
                 {
-                    CopyId = int.Parse(txtCopyId.Text.Trim()),
+                    CopyId = copyId,
                     ReportDate = dtpReportDate.Value,
                     EmployeeId = ((Employee)cboEmployee.SelectedItem).EmployeeId,
                     Reason = txtReason.Text.Trim(),
-                    Description = txtDescription.Text.Trim()
+                    Description = txtDescription.Text.Trim(),
+                    Notes = txtDescription.Text.Trim()
                 };
                 context.LostBooks.Add(newLostBook);
                 context.SaveChanges();
@@ -147,6 +161,7 @@ namespace LibraryManagement
 
                 existingReport.Reason = txtReason.Text.Trim();
                 existingReport.Description = txtDescription.Text.Trim();
+                existingReport.Notes = txtDescription.Text.Trim();
                 existingReport.ReportDate = dtpReportDate.Value;
                 existingReport.EmployeeId = ((Employee)cboEmployee.SelectedItem).EmployeeId;
 
@@ -166,17 +181,110 @@ namespace LibraryManagement
 
         private void btnSelectCopy_Click(object sender, EventArgs e)
         {
-            // Ví dụ đơn giản: chọn bản sao từ danh sách những sách chưa mất
-            var availableCopies = context.BookCopies
+            ShowCopySelectionForm();
+        }
+        private void ShowCopySelectionForm()
+        {
+            var copies = context.BookCopies
                 .Include(bc => bc.Book)
-                .Where(bc => bc.Status != 3) // 3 = Đã mất
+                .Include(bc => bc.Location)
+                .Where(bc => bc.Status != 3 && bc.LostBook == null)
+                .Select(bc => new
+                {
+                    bc.CopyId,
+                    BookTitle = bc.Book.Title,
+                    AuthorName = bc.Book.Author.Name,
+                    StatusText = Utility.GetCopyStatusText(bc.Status),
+                    Location = bc.Location != null
+                        ? $"{bc.Location.AreaCode}-{bc.Location.ShelfNumber}"
+                        : "N/A"
+                })
                 .ToList();
 
-            var form = new Form(); // Popup chọn sách
-                                   // Add logic hiển thị danh sách và chọn một dòng để điền vào txtCopyId, txtBookTitle
-                                   // (Có thể dùng DataGridView hoặc ListBox)
+            Form form = new Form();
+            form.Text = "Chọn bản sao sách";
+            form.Size = new Size(800, 500);
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.MaximizeBox = false;
+            form.MinimizeBox = false;
+
+            DataGridView dgvCopies = new DataGridView();
+            dgvCopies.Location = new Point(20, 20);
+            dgvCopies.Size = new Size(740, 360);
+            dgvCopies.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvCopies.AllowUserToAddRows = false;
+            dgvCopies.ReadOnly = true;
+            dgvCopies.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCopies.DataSource = copies;
+            FormatGrid(dgvCopies);
+
+            if (dgvCopies.Columns["CopyId"] != null)
+                dgvCopies.Columns["CopyId"].HeaderText = "Mã bản sao";
+            if (dgvCopies.Columns["BookTitle"] != null)
+                dgvCopies.Columns["BookTitle"].HeaderText = "Tên sách";
+            if (dgvCopies.Columns["AuthorName"] != null)
+                dgvCopies.Columns["AuthorName"].HeaderText = "Tác giả";
+            if (dgvCopies.Columns["StatusText"] != null)
+                dgvCopies.Columns["StatusText"].HeaderText = "Trạng thái";
+            if (dgvCopies.Columns["Location"] != null)
+                dgvCopies.Columns["Location"].HeaderText = "Vị trí";
+
+            Button btnSelect = new Button();
+            btnSelect.Text = "Chọn";
+            btnSelect.Size = new Size(100, 35);
+            btnSelect.Location = new Point(560, 400);
+            btnSelect.BackColor = Color.FromArgb(210, 121, 106);
+            btnSelect.ForeColor = Color.White;
+            btnSelect.FlatStyle = FlatStyle.Flat;
+            btnSelect.FlatAppearance.BorderSize = 0;
+
+            Button btnCancel = new Button();
+            btnCancel.Text = "Hủy";
+            btnCancel.Size = new Size(100, 35);
+            btnCancel.Location = new Point(670, 400);
+            btnCancel.BackColor = Color.FromArgb(129, 195, 215);
+            btnCancel.ForeColor = Color.White;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.FlatAppearance.BorderSize = 0;
+
+            btnSelect.Click += (s, e) =>
+            {
+                if (dgvCopies.SelectedRows.Count > 0)
+                {
+                    txtCopyId.Text = dgvCopies.SelectedRows[0].Cells["CopyId"].Value.ToString();
+                    txtBookTitle.Text = dgvCopies.SelectedRows[0].Cells["BookTitle"].Value.ToString();
+                    form.Close();
+                }
+            };
+
+            btnCancel.Click += (s, e) => form.Close();
+
+            form.Controls.Add(dgvCopies);
+            form.Controls.Add(btnSelect);
+            form.Controls.Add(btnCancel);
+
+            form.ShowDialog();
         }
 
+        private void FormatGrid(DataGridView dgv)
+        {
+            dgv.ForeColor = Color.FromArgb(64, 64, 64);
+            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(210, 121, 106);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgv.EnableHeadersVisualStyles = false;
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 245, 245);
+            dgv.DefaultCellStyle.BackColor = Color.White;
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(210, 121, 106);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgv.RowTemplate.Height = 28;
+            dgv.GridColor = Color.FromArgb(224, 224, 224);
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.RowHeadersVisible = false;
+        }
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtLostBookId.Text))
@@ -208,6 +316,41 @@ namespace LibraryManagement
 
             // Bỏ chọn dòng nào đang được chọn
             dgvLostBooks.ClearSelection();
+        }
+        private void FormatDataGridView()
+        {
+            if (dgvLostBooks.DataSource == null || dgvLostBooks.Columns.Count == 0)
+                return;
+
+            if (dgvLostBooks.Columns["LostBookId"] != null)
+                dgvLostBooks.Columns["LostBookId"].HeaderText = "Mã báo mất";
+            if (dgvLostBooks.Columns["CopyId"] != null)
+                dgvLostBooks.Columns["CopyId"].HeaderText = "Mã bản sao";
+            if (dgvLostBooks.Columns["BookTitle"] != null)
+                dgvLostBooks.Columns["BookTitle"].HeaderText = "Tên sách";
+            if (dgvLostBooks.Columns["EmployeeName"] != null)
+                dgvLostBooks.Columns["EmployeeName"].HeaderText = "Nhân viên";
+            if (dgvLostBooks.Columns["Reason"] != null)
+                dgvLostBooks.Columns["Reason"].HeaderText = "Lý do";
+            if (dgvLostBooks.Columns["Description"] != null)
+                dgvLostBooks.Columns["Description"].HeaderText = "Mô tả";
+            if (dgvLostBooks.Columns["ReportDate"] != null)
+                dgvLostBooks.Columns["ReportDate"].HeaderText = "Ngày báo mất";
+
+            dgvLostBooks.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvLostBooks.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvLostBooks.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvLostBooks.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(210, 121, 106);
+            dgvLostBooks.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvLostBooks.EnableHeadersVisualStyles = false;
+            dgvLostBooks.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 245, 245);
+            dgvLostBooks.DefaultCellStyle.BackColor = Color.White;
+            dgvLostBooks.DefaultCellStyle.SelectionBackColor = Color.FromArgb(210, 121, 106);
+            dgvLostBooks.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvLostBooks.RowTemplate.Height = 28;
+            dgvLostBooks.GridColor = Color.FromArgb(224, 224, 224);
+            dgvLostBooks.BorderStyle = BorderStyle.None;
+            dgvLostBooks.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
         }
     }
 }

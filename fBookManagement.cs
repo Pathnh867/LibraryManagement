@@ -626,6 +626,9 @@ namespace LibraryManagement
                     context.Books.Add(newBook);
                     context.SaveChanges();
 
+                    // Tạo các bản sao mặc định dựa trên tổng số lượng nhập vào
+                    CreateBookCopies(newBook, newBook.TotalCopies);
+
                     if (authorId.HasValue)
                     {
                         var newJoin = new BookAuthor { BookId = newBook.BookId, AuthorId = authorId.Value };
@@ -651,7 +654,10 @@ namespace LibraryManagement
                     if (currentBook.TotalCopies > oldTotal)
                     {
                         // If we add more copies, they're all available
-                        currentBook.AvailableCopies += (currentBook.TotalCopies - oldTotal);
+                        int difference = currentBook.TotalCopies - oldTotal;
+                        // If we add more copies, tạo thêm bản sao và cập nhật khả dụng
+                        CreateBookCopies(currentBook, difference);
+                        currentBook.AvailableCopies += difference;
                     }
                     else if (currentBook.TotalCopies < oldTotal)
                     {
@@ -1281,6 +1287,22 @@ namespace LibraryManagement
             {
                 MessageBox.Show("Lỗi khi thêm bản sao: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void CreateBookCopies(Book book, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                BookCopy copy = new BookCopy
+                {
+                    BookId = book.BookId,
+                    Status = 1,
+                    AcquisitionDate = DateTime.Today,
+                    Notes = string.Empty
+                };
+                context.BookCopies.Add(copy);
+            }
+            context.SaveChanges();
         }
 
         #endregion

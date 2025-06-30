@@ -56,6 +56,7 @@
             btnRefresh = new Button();
             btnDelete = new Button();
             btnUpdate = new Button();
+            btnRestore = new Button();
             btnAdd = new Button();
             lblLostBookList = new Label();
             pnlLostBookInfo.SuspendLayout();
@@ -306,6 +307,7 @@
             pnlDataGrid.Controls.Add(btnRefresh);
             pnlDataGrid.Controls.Add(btnDelete);
             pnlDataGrid.Controls.Add(btnUpdate);
+            pnlDataGrid.Controls.Add(btnRestore);
             pnlDataGrid.Controls.Add(btnAdd);
             pnlDataGrid.Controls.Add(lblLostBookList);
             pnlDataGrid.Location = new Point(20, 380);
@@ -384,6 +386,22 @@
             btnUpdate.Text = "Cập nhật";
             btnUpdate.UseVisualStyleBackColor = false;
             btnUpdate.Click += btnUpdate_Click;
+
+            //
+            // btnRestore
+            //
+            btnRestore.BackColor = Color.FromArgb(210, 121, 106);
+            btnRestore.FlatAppearance.BorderSize = 0;
+            btnRestore.FlatStyle = FlatStyle.Flat;
+            btnRestore.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRestore.ForeColor = Color.White;
+            btnRestore.Location = new Point(365, 15);
+            btnRestore.Name = "btnRestore";
+            btnRestore.Size = new Size(96, 29);
+            btnRestore.TabIndex = 0;
+            btnRestore.Text = "Khôi phục";
+            btnRestore.UseVisualStyleBackColor = false;
+            btnRestore.Click += btnRestore_Click;
             // 
             // btnAdd
             // 
@@ -466,6 +484,7 @@
         private Button btnDelete;
         private Button btnUpdate;
         private Button btnAdd;
+        private Button btnRestore;
         private Label lblLostBookList;
     }
 }

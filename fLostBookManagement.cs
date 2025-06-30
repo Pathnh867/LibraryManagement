@@ -310,7 +310,44 @@ namespace LibraryManagement
                 }
             }
         }
+        private void btnRestore_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtLostBookId.Text))
+            {
+                MessageBox.Show("Vui lòng chọn báo mất sách để khôi phục.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            var confirm = MessageBox.Show("Xác nhận khôi phục bản sao sách này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            int id = int.Parse(txtLostBookId.Text.Trim());
+            var report = context.LostBooks
+                .Include(lb => lb.BookCopy)
+                .ThenInclude(bc => bc.Book)
+                .FirstOrDefault(lb => lb.LostBookId == id);
+
+            if (report != null)
+            {
+                var copy = report.BookCopy;
+                if (copy != null)
+                {
+                    copy.Status = 1; // Có sẵn
+                    if (copy.Book != null)
+                    {
+                        copy.Book.AvailableCopies++;
+                        context.Update(copy.Book);
+                    }
+                    context.Update(copy);
+                }
+                context.LostBooks.Remove(report);
+                context.SaveChanges();
+
+                MessageBox.Show("Đã khôi phục sách thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadLostBookData();
+                ClearForm();
+            }
+        }
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             ClearForm();

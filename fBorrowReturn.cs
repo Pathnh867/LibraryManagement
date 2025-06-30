@@ -656,12 +656,13 @@ namespace LibraryManagement
                     }
                 }
 
-                // Update book copy status
+                // Hỏi tình trạng sách khi trả
                 var condition = MessageBox.Show(
-                   "Sách trả có bị hư hỏng hoặc mất không?\nYes = Hư hỏng, No = Mất, Cancel = Bình thường",
-                   "Tình trạng sách",
-                   MessageBoxButtons.YesNoCancel,
-                   MessageBoxIcon.Question);
+                     "Sách trả có bị hư hỏng hoặc mất không?\nYes = Hư hỏng, No = Mất, Cancel = Bình thường",
+                    "Tình trạng sách",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
 
                 // Update book available copies
                 if (condition == DialogResult.No) // lost

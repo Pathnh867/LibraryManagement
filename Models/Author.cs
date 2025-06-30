@@ -17,6 +17,6 @@ namespace LibraryManagement.Models
         public string Biography { get; set; }
 
         // Navigation property
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }

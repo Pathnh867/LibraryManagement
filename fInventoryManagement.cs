@@ -609,14 +609,15 @@ namespace LibraryManagement
             // Load available book copies
             var bookCopies = context.BookCopies
                 .Include(bc => bc.Book)
-                .ThenInclude(b => b.Author)
+                .ThenInclude(b => b.BookAuthors)
+                .ThenInclude(ba => ba.Author)
                 .Include(bc => bc.Location)
                 .Where(bc => bc.Status == 1 || bc.Status == 2) // Available or borrowed
                 .Select(bc => new
                 {
                     bc.CopyId,
                     BookTitle = bc.Book.Title,
-                    AuthorName = bc.Book.Author.Name,
+                    AuthorName = string.Join(", ", bc.Book.BookAuthors.Select(ba => ba.Author.Name)),
                     Status = bc.Status,
                     StatusText = bc.Status == 1 ? "Có sẵn" : "Đang mượn",
                     Location = bc.Location != null ? $"{bc.Location.AreaCode}-{bc.Location.ShelfNumber}" : "N/A"

@@ -333,16 +333,19 @@ namespace LibraryManagement
             try
             {
                 var books = context.Books
-                    .Include(b => b.Author)
+                    .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
                     .Include(b => b.Category)
                     .OrderBy(b => b.Title)
-                    .Select(b => new {
+                    .Select(b => new
+                    {
                         b.BookId,
                         b.Title,
                         b.ISBN,
                         b.PublicationYear,
                         CategoryName = b.Category.Name,
-                        AuthorName = b.Author.Name,
+                        AuthorName = b.BookAuthors != null && b.BookAuthors.Any()
+                            ? string.Join(", ", b.BookAuthors.Select(ba => ba.Author.Name))
+                            : string.Empty,
                         b.TotalCopies,
                         b.AvailableCopies,
                         b.Description
@@ -429,7 +432,7 @@ namespace LibraryManagement
             btnAddCategory.Enabled = isEditing;
             btnAddAuthor.Enabled = isEditing;
 
-            btnAdd.Text = isEditing && isAddNew ? "Lưu" : "Tạo mới";
+            btnAdd.Text = isEditing ? "Lưu" : "Tạo mới";
             btnUpdate.Enabled = !isEditing && currentBook != null;
             btnDelete.Enabled = !isEditing && currentBook != null;
             btnRefresh.Text = isEditing ? "Hủy" : "Làm mới";
@@ -452,7 +455,8 @@ namespace LibraryManagement
 
                 // Lấy đối tượng Category và Author từ context để hiển thị
                 var category = context.Categories.Find(book.CategoryId);
-                var author = context.Authors.Find(book.AuthorId);
+                var firstAuthorId = book.BookAuthors.FirstOrDefault()?.AuthorId;
+                var author = firstAuthorId != null ? context.Authors.Find(firstAuthorId) : null;
 
                 if (category != null)
                 {
@@ -463,6 +467,12 @@ namespace LibraryManagement
                 {
                     cboAuthorName.SelectedValue = author.AuthorId;
                 }
+                else
+                {
+                    cboAuthorName.SelectedIndex = -1;
+                    cboAuthorName.Text = string.Empty;
+                }
+
 
                 numTotalCopies.Value = book.TotalCopies;
                 txtDescription.Text = book.Description;
@@ -482,13 +492,6 @@ namespace LibraryManagement
             {
                 MessageBox.Show("Vui lòng chọn hoặc nhập thể loại", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboCategory.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(cboAuthorName.Text))
-            {
-                MessageBox.Show("Vui lòng chọn hoặc nhập tác giả", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboAuthorName.Focus();
                 return false;
             }
 
@@ -601,7 +604,11 @@ namespace LibraryManagement
 
                 // Lấy hoặc tạo CategoryId và AuthorId
                 int categoryId = GetOrCreateCategory(cboCategory.Text.Trim());
-                int authorId = GetOrCreateAuthor(cboAuthorName.Text.Trim());
+                int? authorId = null;
+                if (!string.IsNullOrWhiteSpace(cboAuthorName.Text))
+                {
+                    authorId = GetOrCreateAuthor(cboAuthorName.Text.Trim());
+                }
 
                 if (isAddNew)
                 {
@@ -611,14 +618,21 @@ namespace LibraryManagement
                         ISBN = txtISBN.Text.Trim(),
                         PublicationYear = int.Parse(txtPublicationYear.Text),
                         CategoryId = categoryId,
-                        AuthorId = authorId,
                         TotalCopies = (int)numTotalCopies.Value,
-                        AvailableCopies = (int)numTotalCopies.Value, // New books are all available
+                        AvailableCopies = (int)numTotalCopies.Value,
                         Description = txtDescription.Text.Trim()
                     };
 
                     context.Books.Add(newBook);
                     context.SaveChanges();
+
+                    if (authorId.HasValue)
+                    {
+                        var newJoin = new BookAuthor { BookId = newBook.BookId, AuthorId = authorId.Value };
+                        context.BookAuthors.Add(newJoin);
+                        context.SaveChanges();
+                    }
+
 
                     MessageBox.Show("Thêm sách mới thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -628,7 +642,7 @@ namespace LibraryManagement
                     currentBook.ISBN = txtISBN.Text.Trim();
                     currentBook.PublicationYear = int.Parse(txtPublicationYear.Text);
                     currentBook.CategoryId = categoryId;
-                    currentBook.AuthorId = authorId;
+                    
 
                     // Check if total copies increased
                     int oldTotal = currentBook.TotalCopies;
@@ -651,7 +665,13 @@ namespace LibraryManagement
 
                     context.Update(currentBook);
                     context.SaveChanges();
-
+                    var existingJoins = context.BookAuthors.Where(ba => ba.BookId == currentBook.BookId).ToList();
+                    context.BookAuthors.RemoveRange(existingJoins);
+                    if (authorId.HasValue)
+                    {
+                        context.BookAuthors.Add(new BookAuthor { BookId = currentBook.BookId, AuthorId = authorId.Value });
+                    }
+                    context.SaveChanges();
                     MessageBox.Show("Cập nhật sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
@@ -766,23 +786,26 @@ namespace LibraryManagement
             try
             {
                 var books = context.Books
-                    .Include(b => b.Author)
+                   .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
                     .Include(b => b.Category)
                     .Where(b =>
                         b.Title.ToLower().Contains(searchTerm) ||
                         b.ISBN.ToLower().Contains(searchTerm) ||
-                        b.Author.Name.ToLower().Contains(searchTerm) ||
+                       (b.BookAuthors != null && b.BookAuthors.Any(ba => ba.Author.Name.ToLower().Contains(searchTerm))) ||
                         b.Category.Name.ToLower().Contains(searchTerm) ||
                         b.Description.ToLower().Contains(searchTerm)
                     )
                     .OrderBy(b => b.Title)
-                    .Select(b => new {
+                    .Select(b => new
+                    {
                         b.BookId,
                         b.Title,
                         b.ISBN,
                         b.PublicationYear,
                         CategoryName = b.Category.Name,
-                        AuthorName = b.Author.Name,
+                        AuthorName = b.BookAuthors != null && b.BookAuthors.Any()
+                            ? string.Join(", ", b.BookAuthors.Select(ba => ba.Author.Name))
+                            : string.Empty,
                         b.TotalCopies,
                         b.AvailableCopies,
                         b.Description
@@ -808,7 +831,9 @@ namespace LibraryManagement
             if (dgvBooks.SelectedRows.Count > 0 && dgvBooks.SelectedRows[0].Cells["BookId"].Value != null)
             {
                 int bookId = (int)dgvBooks.SelectedRows[0].Cells["BookId"].Value;
-                currentBook = context.Books.Find(bookId);
+                currentBook = context.Books
+                    .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
+                    .FirstOrDefault(b => b.BookId == bookId);
 
                 if (currentBook != null)
                 {
@@ -848,7 +873,7 @@ namespace LibraryManagement
             try
             {
                 var book = context.Books
-                    .Include(b => b.Author)
+                    .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
                     .Include(b => b.Category)
                     .Include(b => b.BookCopies)
                     .Include(b => b.BorrowRecords)
@@ -894,7 +919,10 @@ namespace LibraryManagement
 
                 // Tác giả
                 Label lblAuthor = new Label();
-                lblAuthor.Text = "Tác giả: " + book.Author.Name;
+                var authors = book.BookAuthors != null && book.BookAuthors.Any()
+                   ? string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))
+                   : "";
+                lblAuthor.Text = "Tác giả: " + authors;
                 lblAuthor.Font = new Font("Segoe UI", 10);
                 lblAuthor.Location = new Point(15, 80);
                 lblAuthor.Size = new Size(550, 20);

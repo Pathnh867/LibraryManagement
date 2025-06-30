@@ -502,7 +502,8 @@ namespace LibraryManagement
                 // Thống kê theo sách
                 var booksData = context.BorrowRecords
                     .Include(br => br.Book)
-                        .ThenInclude(b => b.Author)
+                        .ThenInclude(b => b.BookAuthors)
+                        .ThenInclude(ba => ba.Author)
                     .Include(br => br.Book)
                         .ThenInclude(b => b.Category)
                     .Where(br => br.BorrowDate >= fromDate && br.BorrowDate <= toDate)
@@ -510,7 +511,7 @@ namespace LibraryManagement
                     .Select(g => new
                     {
                         TenSach = g.First().Book.Title,
-                        TacGia = g.First().Book.Author.Name,
+                        TacGia = string.Join(", ", g.First().Book.BookAuthors.Select(ba => ba.Author.Name)),
                         TheLoai = g.First().Book.Category.Name,
                         SoLanMuon = g.Count(),
                         SoLanTraDungHan = g.Count(br => br.ReturnDate.HasValue && br.ReturnDate <= br.DueDate),
@@ -645,7 +646,8 @@ namespace LibraryManagement
                 // Dữ liệu sách quá hạn - Tách thành 2 bước để tránh lỗi Expression Tree
                 var overdueRecords = context.BorrowRecords
                     .Include(br => br.Book)
-                        .ThenInclude(b => b.Author)
+                        .ThenInclude(b => b.BookAuthors)
+                        .ThenInclude(ba => ba.Author)
                     .Include(br => br.Member)
                     .Include(br => br.BookCopy)
                     .Where(br => br.ReturnDate == null && br.DueDate < DateTime.Today)
@@ -656,7 +658,7 @@ namespace LibraryManagement
                 var overdueData = overdueRecords.Select(br => new
                 {
                     TenSach = br.Book.Title,
-                    TacGia = br.Book.Author.Name,
+                    TacGia = string.Join(", ", br.Book.BookAuthors.Select(ba => ba.Author.Name)),
                     TenThanhVien = br.Member.Name,
                     SoDienThoai = br.Member.Phone,
                     NgayMuon = br.BorrowDate,

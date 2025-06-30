@@ -26,10 +26,7 @@ namespace LibraryManagement.Models
         public virtual Category Category { get; set; }
 
         [Required]
-        public int AuthorId { get; set; }
-
-        [ForeignKey("AuthorId")]
-        public virtual Author Author { get; set; }
+        public virtual ICollection<BookAuthor> BookAuthors { get; set; }
 
         public int TotalCopies { get; set; }
 

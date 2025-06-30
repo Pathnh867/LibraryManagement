@@ -187,13 +187,15 @@ namespace LibraryManagement
         {
             var copies = context.BookCopies
                 .Include(bc => bc.Book)
+                 .ThenInclude(b => b.BookAuthors)
+                   .ThenInclude(ba => ba.Author)
                 .Include(bc => bc.Location)
                 .Where(bc => bc.Status != 3 && bc.LostBook == null)
                 .Select(bc => new
                 {
                     bc.CopyId,
                     BookTitle = bc.Book.Title,
-                    AuthorName = bc.Book.Author.Name,
+                    AuthorName = string.Join(", ", bc.Book.BookAuthors.Select(ba => ba.Author.Name)),
                     StatusText = Utility.GetCopyStatusText(bc.Status),
                     Location = bc.Location != null
                         ? $"{bc.Location.AreaCode}-{bc.Location.ShelfNumber}"

@@ -47,6 +47,8 @@ C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\Microsoft.SqlServer.Server.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\Mono.TextTemplating.dll
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\PdfSharp.Charting.dll
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\PdfSharp.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\System.Composition.AttributedModel.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\System.Composition.Convention.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\System.Composition.Hosting.dll
@@ -110,6 +112,8 @@ C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\de\PdfSharp.Charting.resources.dll
+C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\de\PdfSharp.resources.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
@@ -143,7 +147,3 @@ C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.pdb
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\LibraryManagement.genruntimeconfig.cache
 C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\obj\Debug\net8.0-windows\ref\LibraryManagement.dll
-C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\PdfSharp.Charting.dll
-C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\PdfSharp.dll
-C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\de\PdfSharp.Charting.resources.dll
-C:\Users\ADMIN\source\repos\LibraryManagement\LibraryManagement\bin\Debug\net8.0-windows\de\PdfSharp.resources.dll

@@ -1,4 +1,6 @@
-﻿namespace LibraryManagement
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace LibraryManagement
 {
     internal static class Program
     {
@@ -11,6 +13,10 @@
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            using (var db = new LibraryDbContext())
+            {
+                db.Database.Migrate();
+            }
             Application.Run(new fLogin());
         }
     }

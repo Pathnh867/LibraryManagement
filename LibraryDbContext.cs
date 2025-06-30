@@ -18,6 +18,7 @@ namespace LibraryManagement
         public DbSet<InventoryCheck> InventoryChecks { get; set; }
         public DbSet<InventoryDetail> InventoryDetails { get; set; }
         public DbSet<LostBook> LostBooks { get; set; }
+        public DbSet<BookAuthor> BookAuthors { get; set; }
 
         // Cấu hình kết nối đến CSDL
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -48,11 +49,20 @@ namespace LibraryManagement
         {
             // Cấu hình các mối quan hệ để tránh chu kỳ cascade
 
-            // Book - Author
-            modelBuilder.Entity<Book>()
-                .HasOne(b => b.Author)
-                .WithMany(a => a.Books)
-                .HasForeignKey(b => b.AuthorId)
+            // Book - Author many-to-many
+            modelBuilder.Entity<BookAuthor>()
+                .HasKey(ba => new { ba.BookId, ba.AuthorId });
+
+            modelBuilder.Entity<BookAuthor>()
+                .HasOne(ba => ba.Book)
+                .WithMany(b => b.BookAuthors)
+                .HasForeignKey(ba => ba.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BookAuthor>()
+                .HasOne(ba => ba.Author)
+                .WithMany(a => a.BookAuthors)
+                .HasForeignKey(ba => ba.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Book - Category

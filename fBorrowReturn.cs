@@ -378,7 +378,7 @@ namespace LibraryManagement
             try
             {
                 var books = context.Books
-                    .Include(b => b.Author)
+                    .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
                     .Include(b => b.Category)
                     .Include(b => b.BookCopies)
                     .Where(b => b.Title.Contains(searchTerm) || b.ISBN.Contains(searchTerm))
@@ -409,7 +409,8 @@ namespace LibraryManagement
                     {
                         selectedBook = book;
                         selectedBookCopy = availableCopy;
-                        txtBookInfo.Text = $"{book.Title} - {book.Author.Name} (Bản sao: {availableCopy.CopyId})";
+                        var authors = string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name));
+                        txtBookInfo.Text = $"{book.Title} - {authors} (Bản sao: {availableCopy.CopyId})";
                     }
                 }
                 else
@@ -451,7 +452,7 @@ namespace LibraryManagement
             {
                 b.BookId,
                 b.Title,
-                AuthorName = b.Author.Name,
+                AuthorName = string.Join(", ", b.BookAuthors.Select(ba => ba.Author.Name)),
                 b.ISBN,
                 AvailableCopies = b.BookCopies.Count(bc => bc.Status == 1),
                 b.TotalCopies
@@ -490,7 +491,8 @@ namespace LibraryManagement
 
                     selectedBook = book;
                     selectedBookCopy = availableCopy;
-                    txtBookInfo.Text = $"{book.Title} - {book.Author.Name} (Bản sao: {availableCopy.CopyId})";
+                    var authorsSel = string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name));
+                    txtBookInfo.Text = $"{book.Title} - {authorsSel} (Bản sao: {availableCopy.CopyId})";
                     SetButtonStates();
                     bookForm.Close();
                 }
@@ -655,12 +657,40 @@ namespace LibraryManagement
                 }
 
                 // Update book copy status
-                borrowRecord.BookCopy.Status = 1; // Available
-                context.Update(borrowRecord.BookCopy);
+                var condition = MessageBox.Show(
+                   "Sách trả có bị hư hỏng hoặc mất không?\nYes = Hư hỏng, No = Mất, Cancel = Bình thường",
+                   "Tình trạng sách",
+                   MessageBoxButtons.YesNoCancel,
+                   MessageBoxIcon.Question);
 
                 // Update book available copies
-                borrowRecord.Book.AvailableCopies++;
-                context.Update(borrowRecord.Book);
+                if (condition == DialogResult.No) // lost
+                {
+                    borrowRecord.BookCopy.Status = 3; // Lost
+                    context.Update(borrowRecord.BookCopy);
+                    var report = new LostBook
+                    {
+                        CopyId = borrowRecord.CopyId,
+                        ReportDate = DateTime.Today,
+                        EmployeeId = Utility.CurrentEmployee?.EmployeeId ?? 1,
+                        Reason = "Mất khi trả",
+                        Description = string.Empty,
+                        Notes = string.Empty
+                    };
+                    context.LostBooks.Add(report);
+                }
+                else if (condition == DialogResult.Yes) // damaged
+                {
+                    borrowRecord.BookCopy.Status = 4; // Damaged
+                    context.Update(borrowRecord.BookCopy);
+                }
+                else // normal
+                {
+                    borrowRecord.BookCopy.Status = 1; // Available
+                    context.Update(borrowRecord.BookCopy);
+                    borrowRecord.Book.AvailableCopies++;
+                    context.Update(borrowRecord.Book);
+                }
 
                 // Update borrow record
                 context.Update(borrowRecord);
@@ -750,14 +780,15 @@ namespace LibraryManagement
                 // Fetch raw data first without complex operations
                 var rawData = context.BorrowRecords
                     .Include(br => br.Book)
-                    .ThenInclude(b => b.Author)
+                    .ThenInclude(b => b.BookAuthors)
+                    .ThenInclude(ba => ba.Author)
                     .Include(br => br.BookCopy)
                     .Where(br => br.MemberId == selectedMember.MemberId && br.ReturnDate == null)
                     .Select(br => new
                     {
                         br.BorrowRecordId,
                         BookTitle = br.Book.Title,
-                        AuthorName = br.Book.Author.Name,
+                        AuthorName = string.Join(", ", br.Book.BookAuthors.Select(ba => ba.Author.Name)),
                         br.CopyId,
                         br.BorrowDate,
                         br.DueDate
@@ -835,12 +866,13 @@ namespace LibraryManagement
                 // Fetch raw data first without complex operations
                 var rawHistory = context.BorrowRecords
                     .Include(br => br.Book)
-                    .ThenInclude(b => b.Author)
+                    .ThenInclude(b => b.BookAuthors)
+                    .ThenInclude(ba => ba.Author)
                     .Where(br => br.MemberId == selectedMember.MemberId)
                     .Select(br => new
                     {
                         BookTitle = br.Book.Title,
-                        AuthorName = br.Book.Author.Name,
+                        AuthorName = string.Join(", ", br.Book.BookAuthors.Select(ba => ba.Author.Name)),
                         br.BorrowDate,
                         br.DueDate,
                         br.ReturnDate,

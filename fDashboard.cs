@@ -325,12 +325,13 @@ namespace LibraryManagement
             {
                 var popularBooks = context.BorrowRecords
                     .Include(br => br.Book)
-                    .ThenInclude(b => b.Author)
+                     .ThenInclude(b => b.BookAuthors)
+                     .ThenInclude(ba => ba.Author)
                     .GroupBy(br => br.BookId)
                     .Select(g => new
                     {
                         BookTitle = g.First().Book.Title,
-                        AuthorName = g.First().Book.Author.Name,
+                        AuthorName = string.Join(", ", g.First().Book.BookAuthors.Select(ba => ba.Author.Name)),
                         BorrowCount = g.Count(),
                         AvailableCopies = g.First().Book.AvailableCopies
                     })

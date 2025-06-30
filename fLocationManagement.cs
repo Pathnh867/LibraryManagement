@@ -572,7 +572,8 @@ namespace LibraryManagement
                 var location = context.BookLocations
                     .Include(l => l.BookCopies)
                     .ThenInclude(bc => bc.Book)
-                    .ThenInclude(b => b.Author)
+                    .ThenInclude(b => b.BookAuthors)
+                    .ThenInclude(ba => ba.Author)
                     .FirstOrDefault(l => l.LocationId == locationId);
 
                 if (location == null)
@@ -659,7 +660,7 @@ namespace LibraryManagement
                 {
                     bc.CopyId,
                     BookTitle = bc.Book.Title,
-                    Author = bc.Book.Author.Name,
+                    Author = string.Join(", ", bc.Book.BookAuthors.Select(ba => ba.Author.Name)),
                     ISBN = bc.Book.ISBN,
                     Status = GetCopyStatusText(bc.Status),
                     AcquisitionDate = bc.AcquisitionDate.ToString("dd/MM/yyyy"),

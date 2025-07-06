@@ -448,7 +448,7 @@ namespace LibraryManagement
                         ChiTieu = "Tổng tiền phạt đã thu",
                         GiaTri = (context.BorrowRecords
                             .Where(br => br.ReturnDate.HasValue && br.ReturnDate >= fromDate && br.ReturnDate <= toDate)
-                            .Select(br => br.LateFee ?? 0)
+                            .Select(br => (br.LateFee ?? 0) + (br.LossDamageFee ?? 0))
                             .Sum()).ToString("N0") + " VNĐ",
                         GhiChu = $"Từ {fromDate:dd/MM/yyyy} đến {toDate:dd/MM/yyyy}"
                     }
@@ -517,7 +517,7 @@ namespace LibraryManagement
                         SoLanTraDungHan = g.Count(br => br.ReturnDate.HasValue && br.ReturnDate <= br.DueDate),
                         SoLanTraTreHan = g.Count(br => br.ReturnDate.HasValue && br.ReturnDate > br.DueDate),
                         DangMuon = g.Count(br => br.ReturnDate == null),
-                        TienPhat = g.Select(br => br.LateFee ?? 0).Sum()
+                        TienPhat = g.Select(br => (br.LateFee ?? 0) + (br.LossDamageFee ?? 0)).Sum()
                     })
                     .OrderByDescending(x => x.SoLanMuon)
                     .ToList();
@@ -588,7 +588,7 @@ namespace LibraryManagement
                             && br.BorrowDate >= fromDate && br.BorrowDate <= toDate),
                         TongTienPhat = m.BorrowRecords
                             .Where(br => br.BorrowDate >= fromDate && br.BorrowDate <= toDate)
-                            .Select(br => br.LateFee ?? 0)
+                            .Select(br => (br.LateFee ?? 0) + (br.LossDamageFee ?? 0))
                             .Sum()
                     })
                     .OrderByDescending(x => x.TongSoLanMuon)

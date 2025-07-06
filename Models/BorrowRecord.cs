@@ -41,6 +41,9 @@ namespace LibraryManagement.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? LateFee { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? LossDamageFee { get; set; }
+
         [StringLength(500, ErrorMessage = "Ghi chú không được vượt quá 500 ký tự")]
         public string Notes { get; set; }
     }

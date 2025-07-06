@@ -395,7 +395,10 @@ namespace LibraryManagement
                 else if (books.Count == 1)
                 {
                     var book = books[0];
-                    var availableCopy = book.BookCopies.FirstOrDefault(bc => bc.Status == 1); // Available
+                    var availableCopy = book.BookCopies
+                       .Where(bc => bc.Status == 1)
+                       .OrderBy(bc => bc.CopyId)
+                       .FirstOrDefault(); // Available
 
                     if (availableCopy == null)
                     {
@@ -410,7 +413,7 @@ namespace LibraryManagement
                         selectedBook = book;
                         selectedBookCopy = availableCopy;
                         var authors = string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name));
-                        txtBookInfo.Text = $"{book.Title} - {authors} (Bản sao: {availableCopy.CopyId})";
+                        txtBookInfo.Text = $"{book.Title} - {authors} (C\u00F3 s\u1EAFn: {book.AvailableCopies})";
                     }
                 }
                 else
@@ -480,7 +483,10 @@ namespace LibraryManagement
                 {
                     int bookId = (int)dgvBooks.SelectedRows[0].Cells["BookId"].Value;
                     var book = books.First(b => b.BookId == bookId);
-                    var availableCopy = book.BookCopies.FirstOrDefault(bc => bc.Status == 1);
+                    var availableCopy = book.BookCopies
+                       .Where(bc => bc.Status == 1)
+                       .OrderBy(bc => bc.CopyId)
+                       .FirstOrDefault();
 
                     if (availableCopy == null)
                     {
@@ -492,7 +498,7 @@ namespace LibraryManagement
                     selectedBook = book;
                     selectedBookCopy = availableCopy;
                     var authorsSel = string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name));
-                    txtBookInfo.Text = $"{book.Title} - {authorsSel} (Bản sao: {availableCopy.CopyId})";
+                    txtBookInfo.Text = $"{book.Title} - {authorsSel} (C\u00F3 s\u1EAFn: {book.AvailableCopies})";
                     SetButtonStates();
                     bookForm.Close();
                 }
@@ -679,11 +685,17 @@ namespace LibraryManagement
                         Notes = string.Empty
                     };
                     context.LostBooks.Add(report);
+                    borrowRecord.LossDamageFee = Utility.LostBookPenalty;
+                    MessageBox.Show($"Bồi thường sách mất: {Utility.LostBookPenalty:N0} VNĐ", "Thông báo phí phạt",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else if (condition == DialogResult.Yes) // damaged
                 {
                     borrowRecord.BookCopy.Status = 4; // Damaged
                     context.Update(borrowRecord.BookCopy);
+                    borrowRecord.LossDamageFee = Utility.DamagedBookPenalty;
+                    MessageBox.Show($"Phí phạt sách hư hỏng: {Utility.DamagedBookPenalty:N0} VNĐ", "Thông báo phí phạt",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else // normal
                 {
@@ -691,6 +703,7 @@ namespace LibraryManagement
                     context.Update(borrowRecord.BookCopy);
                     borrowRecord.Book.AvailableCopies++;
                     context.Update(borrowRecord.Book);
+                    borrowRecord.LossDamageFee = 0;
                 }
 
                 // Update borrow record
@@ -870,6 +883,8 @@ namespace LibraryManagement
                     .ThenInclude(b => b.BookAuthors)
                     .ThenInclude(ba => ba.Author)
                     .Where(br => br.MemberId == selectedMember.MemberId)
+                    .OrderByDescending(br => br.BorrowDate)
+                    .ThenByDescending(br => br.BorrowRecordId)
                     .Select(br => new
                     {
                         BookTitle = br.Book.Title,
@@ -877,7 +892,8 @@ namespace LibraryManagement
                         br.BorrowDate,
                         br.DueDate,
                         br.ReturnDate,
-                        br.LateFee
+                        br.LateFee,
+                        br.LossDamageFee
                     })
                     .OrderByDescending(br => br.BorrowDate)
                     .Take(50)
@@ -892,6 +908,7 @@ namespace LibraryManagement
                     DueDate = item.DueDate,
                     ReturnDate = item.ReturnDate,
                     LateFee = item.LateFee ?? 0,
+                    LossDamageFee = item.LossDamageFee ?? 0,
                     Status = item.ReturnDate == null ? "Đang mượn" : "Đã trả"
                 }).ToList();
 
@@ -906,6 +923,8 @@ namespace LibraryManagement
                     dgvBorrowHistory.Columns["DueDate"].HeaderText = "Hạn trả";
                     dgvBorrowHistory.Columns["ReturnDate"].HeaderText = "Ngày trả";
                     dgvBorrowHistory.Columns["LateFee"].HeaderText = "Phí phạt";
+                    if (dgvBorrowHistory.Columns["LossDamageFee"] != null)
+                        dgvBorrowHistory.Columns["LossDamageFee"].HeaderText = "Phí mất/hỏng";
                     dgvBorrowHistory.Columns["Status"].HeaderText = "Trạng thái";
 
                     // Format date columns
@@ -913,6 +932,8 @@ namespace LibraryManagement
                     dgvBorrowHistory.Columns["DueDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
                     dgvBorrowHistory.Columns["ReturnDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
                     dgvBorrowHistory.Columns["LateFee"].DefaultCellStyle.Format = "N0";
+                    if (dgvBorrowHistory.Columns["LossDamageFee"] != null)
+                        dgvBorrowHistory.Columns["LossDamageFee"].DefaultCellStyle.Format = "N0";
                 }
             }
             catch (Exception ex)

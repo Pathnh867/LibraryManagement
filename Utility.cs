@@ -8,6 +8,10 @@ namespace LibraryManagement
         // Lưu thông tin nhân viên đang đăng nhập
         public static Employee CurrentEmployee { get; set; }
 
+        public const decimal LostBookPenalty = 100000M;
+        public const decimal DamagedBookPenalty = 50000M;
+
+
         // Kiểm tra xem form đã được mở hay chưa
         public static bool IsOpeningForm(string formName)
         {

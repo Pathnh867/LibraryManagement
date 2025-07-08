@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace LibraryManagement
 {
@@ -139,8 +140,8 @@ namespace LibraryManagement
 
         private void BtnAddAuthor_Click(object sender, EventArgs e)
         {
-            string newAuthorName = cboAuthorName.Text.Trim();
-            if (string.IsNullOrEmpty(newAuthorName))
+            string newAuthorNames = cboAuthorName.Text.Trim();
+            if (string.IsNullOrEmpty(newAuthorNames))
             {
                 MessageBox.Show("Vui lòng nhập tên tác giả!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -149,29 +150,36 @@ namespace LibraryManagement
             try
             {
                 // Kiểm tra xem tác giả đã tồn tại chưa - sửa lỗi LINQ
-                var existingAuthor = context.Authors.FirstOrDefault(a => a.Name.ToLower() == newAuthorName.ToLower());
-                if (existingAuthor != null)
+                var names = newAuthorNames.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                bool added = false;
+                foreach (var name in names)
                 {
-                    MessageBox.Show("Tác giả này đã tồn tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    cboAuthorName.SelectedItem = existingAuthor;
-                    return;
+                    string trimmedName = name.Trim();
+                    if (string.IsNullOrEmpty(trimmedName)) continue;
+                    var existingAuthor = context.Authors.FirstOrDefault(a => a.Name.ToLower() == trimmedName.ToLower());
+                    if (existingAuthor != null)
+                    {
+                        continue; // skip existing
+                    }
+                    var newAuthor = new Author
+                    {
+                        Name = trimmedName,
+                        Biography = "Thêm từ form quản lý sách"
+                    };
+                    context.Authors.Add(newAuthor);
+                    added = true;
                 }
-
-                // Tạo tác giả mới
-                var newAuthor = new Author
+                if (added)
                 {
-                    Name = newAuthorName,
-                    Biography = "Thêm từ form quản lý sách"
-                };
-
-                context.Authors.Add(newAuthor);
-                context.SaveChanges();
-
-                // Cập nhật lại danh sách tác giả và chọn tác giả mới
-                LoadAuthors();
-                cboAuthorName.Text = newAuthorName;
-
-                MessageBox.Show("Thêm tác giả mới thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    context.SaveChanges();
+                    LoadAuthors();
+                    cboAuthorName.Text = string.Empty;
+                    MessageBox.Show("Thêm tác giả mới thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Tác giả đã tồn tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
@@ -455,23 +463,16 @@ namespace LibraryManagement
 
                 // Lấy đối tượng Category và Author từ context để hiển thị
                 var category = context.Categories.Find(book.CategoryId);
-                var firstAuthorId = book.BookAuthors.FirstOrDefault()?.AuthorId;
-                var author = firstAuthorId != null ? context.Authors.Find(firstAuthorId) : null;
-
+                var authorNames = book.BookAuthors != null && book.BookAuthors.Any()
+                    ? string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))
+                    : string.Empty;
                 if (category != null)
                 {
                     cboCategory.SelectedValue = category.CategoryId;
                 }
 
-                if (author != null)
-                {
-                    cboAuthorName.SelectedValue = author.AuthorId;
-                }
-                else
-                {
-                    cboAuthorName.SelectedIndex = -1;
-                    cboAuthorName.Text = string.Empty;
-                }
+                cboAuthorName.SelectedIndex = -1;
+                cboAuthorName.Text = authorNames;
 
 
                 numTotalCopies.Value = book.TotalCopies;
@@ -533,24 +534,32 @@ namespace LibraryManagement
             return category.CategoryId;
         }
 
-        private int GetOrCreateAuthor(string authorName)
+        private List<int> GetOrCreateAuthors(string authorNames)
         {
-            // Sửa lỗi LINQ - không sử dụng StringComparison trong EF
-            var author = context.Authors.FirstOrDefault(a => a.Name.ToLower() == authorName.ToLower());
+            List<int> ids = new List<int>();
+            var names = authorNames.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            if (author == null)
+            foreach (var name in names)
             {
-                author = new Author
-                {
-                    Name = authorName,
-                    Biography = "Thêm từ form quản lý sách"
-                };
+                string trimmedName = name.Trim();
+                if (string.IsNullOrEmpty(trimmedName)) continue;
 
-                context.Authors.Add(author);
-                context.SaveChanges();
+                var author = context.Authors.FirstOrDefault(a => a.Name.ToLower() == trimmedName.ToLower());
+                if (author == null)
+                {
+                    author = new Author
+                    {
+                        Name = trimmedName,
+                        Biography = "Thêm từ form quản lý sách"
+                    };
+                    context.Authors.Add(author);
+                    context.SaveChanges();
+                }
+                ;
+                ids.Add(author.AuthorId);
             }
 
-            return author.AuthorId;
+            return ids;
         }
 
         #endregion
@@ -604,10 +613,10 @@ namespace LibraryManagement
 
                 // Lấy hoặc tạo CategoryId và AuthorId
                 int categoryId = GetOrCreateCategory(cboCategory.Text.Trim());
-                int? authorId = null;
+                List<int> authorIds = new List<int>();
                 if (!string.IsNullOrWhiteSpace(cboAuthorName.Text))
                 {
-                    authorId = GetOrCreateAuthor(cboAuthorName.Text.Trim());
+                    authorIds = GetOrCreateAuthors(cboAuthorName.Text.Trim());
                 }
 
                 if (isAddNew)
@@ -629,10 +638,13 @@ namespace LibraryManagement
                     // Tạo các bản sao mặc định dựa trên tổng số lượng nhập vào
                     CreateBookCopies(newBook, newBook.TotalCopies);
 
-                    if (authorId.HasValue)
+                    if (authorIds.Any())
                     {
-                        var newJoin = new BookAuthor { BookId = newBook.BookId, AuthorId = authorId.Value };
-                        context.BookAuthors.Add(newJoin);
+                        foreach (var id in authorIds)
+                        {
+                            var newJoin = new BookAuthor { BookId = newBook.BookId, AuthorId = id };
+                            context.BookAuthors.Add(newJoin);
+                        }
                         context.SaveChanges();
                     }
 
@@ -673,9 +685,12 @@ namespace LibraryManagement
                     context.SaveChanges();
                     var existingJoins = context.BookAuthors.Where(ba => ba.BookId == currentBook.BookId).ToList();
                     context.BookAuthors.RemoveRange(existingJoins);
-                    if (authorId.HasValue)
+                    if (authorIds.Any())
                     {
-                        context.BookAuthors.Add(new BookAuthor { BookId = currentBook.BookId, AuthorId = authorId.Value });
+                        foreach (var id in authorIds)
+                        {
+                            context.BookAuthors.Add(new BookAuthor { BookId = currentBook.BookId, AuthorId = id });
+                        }
                     }
                     context.SaveChanges();
                     MessageBox.Show("Cập nhật sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
